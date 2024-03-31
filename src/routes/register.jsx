@@ -1,29 +1,47 @@
-import { useState, useEffect } from "react";
-import { TextInput } from "@tremor/react";
-import { Button, Dialog, DialogPanel } from "@tremor/react";
-import { Link, useNavigate } from "react-router-dom";
-// import "./App.css";
+import { useState } from "react";
+import {
+  TextInput,
+  Select,
+  SelectItem,
+  Dialog,
+  DialogPanel,
+} from "@tremor/react";
+import { RiArrowRightLine, RiSearch2Line } from "@remixicon/react";
+import { Button } from "@tremor/react";
+import ReactDOM from "react-dom/client";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  BrowserRouter,
+  Route,
+  Link,
+} from "react-router-dom";
+import valorant from "../assets/valorant.svg";
+import counterstrike2 from "../assets/counterstrike2.svg";
 
-function App() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const nicknameLogin = localStorage.getItem("nickname");
-    if (nicknameLogin) {
-      navigate("/home");
-    }
-  }, []);
-
+function Register() {
   const [isOpenPleaseFill, setIsOpenPleaseFill] = useState(false);
+  const [isOpenSuccess, setIsOpenSuccess] = useState(false);
   const [isOpenError, setIsOpenError] = useState(false);
 
   const [email, setEmail] = useState("");
   const [userPass, setUserPass] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [gameId, setGameId] = useState("1");
+
+  const handleClear = async () => {
+    setEmail("");
+    setUserPass("");
+    setNickname("");
+    setPhoneNumber("");
+    setGameId("1");
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!email || !userPass) {
+    if (!email || !userPass || !nickname || !phoneNumber || !gameId) {
       console.error("Please fill in all fields");
       setIsOpenPleaseFill(true);
       return;
@@ -32,11 +50,14 @@ function App() {
     const jsonData = {
       email: email,
       user_pass: userPass,
+      nickname: nickname,
+      phone_number: phoneNumber,
+      game_id: parseInt(gameId),
     };
     console.log(jsonData);
     try {
       const response = await fetch(
-        "https://scrim-api-production.up.railway.app/login",
+        "https://scrim-api-production.up.railway.app/register",
         {
           method: "POST",
           headers: {
@@ -46,25 +67,15 @@ function App() {
         }
       );
       if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("email", data.email);
-        localStorage.setItem("game_id", data.game_id);
-        localStorage.setItem("game_name", data.game_name);
-        localStorage.setItem("nickname", data.nickname);
-        localStorage.setItem("phone_number", data.phone_number);
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("team_id", data.team_id);
-        localStorage.setItem("team_name", data.team_name);
-        localStorage.setItem("user_name", data.user_name);
-        console.log("Login successful", data);
-        navigate("/home");
+        setIsOpenSuccess(true);
+        console.log("Register successful", response);
       } else {
         setIsOpenError(true);
-        console.error("Login failed", response);
+        console.error("Register failed", response);
       }
     } catch (error) {
       setIsOpenError(true);
-      console.error("Error occurred while Login in:", error);
+      console.error("Error occurred while Register in:", error);
     }
   };
   return (
@@ -91,6 +102,29 @@ function App() {
           </DialogPanel>
         </Dialog>
         <Dialog
+          open={isOpenSuccess}
+          onClose={(val) => setIsOpenSuccess(val)}
+          static={true}
+        >
+          <DialogPanel>
+            <h3 className="text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              Success.
+            </h3>
+            <p className="mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content">
+              Register successfuly.
+            </p>
+            <Button
+              className="mt-8 w-full"
+              onClick={() => {
+                setIsOpenSuccess(false);
+                handleClear();
+              }}
+            >
+              Got it!
+            </Button>
+          </DialogPanel>
+        </Dialog>
+        <Dialog
           open={isOpenError}
           onClose={(val) => setIsOpenError(val)}
           static={true}
@@ -100,7 +134,7 @@ function App() {
               Error.
             </h3>
             <p className="mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-              Couldn't find your account.
+              Email already exist.
             </p>
             <Button
               className="mt-8 w-full"
@@ -112,9 +146,22 @@ function App() {
         </Dialog>
         <div className="bg-white bg-gray-900 shadow-md rounded-lg px-8 py-6 max-w-md">
           <h1 className="text-2xl font-bold text-center mb-4 text-gray-950">
-            Welcome to Scrim!
+            Register to Scrim!
           </h1>
           <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label
+                htmlFor="nickname"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Nickname
+              </label>
+              <TextInput
+                placeholder="Enter your nickname"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+              />
+            </div>
             <div className="mb-4">
               <label
                 htmlFor="email"
@@ -142,29 +189,67 @@ function App() {
                 value={userPass}
                 onChange={(e) => setUserPass(e.target.value)}
               />
-              <Link
-                to="/change-password"
-                className="text-xs text-gray-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="phoneNumber"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Forgot Password?
-              </Link>
+                Phone Number
+              </label>
+              <TextInput
+                type="tel"
+                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                placeholder="098-789-7655"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="gameId"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Game
+              </label>
+              <Select
+                defaultValue={gameId}
+                value={gameId}
+                onValueChange={(e) => setGameId(e)}
+              >
+                <SelectItem value="1">
+                  <div class="inline-flex items-center">
+                    <img src={valorant} className="h-4 w-4 rounded-full me-2" />
+                    Valorant
+                  </div>
+                </SelectItem>
+                <SelectItem value="2">
+                  <div class="inline-flex items-center">
+                    <img
+                      src={counterstrike2}
+                      className="h-4 w-4 rounded-full me-2"
+                    />
+                    CSGO2
+                  </div>
+                </SelectItem>
+              </Select>
             </div>
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs text-center text-slate-400">
-                Don't Have an Account?
+                Already register?
               </p>
               <Link
-                to="/register"
+                to="/"
                 className="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Create Account
+                Login
               </Link>
             </div>
             <Button
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Login
+              Register
             </Button>
           </form>
         </div>
@@ -173,4 +258,4 @@ function App() {
   );
 }
 
-export default App;
+export default Register;
