@@ -28,9 +28,35 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 
 const Header = (props) => {
-  const { nickname, team_id, team_name, role, game_name } = props
+  const { nickname, team_id, team_name, role, game_name, invite_code, invite_flag } = props
   const [teamName, setTeamName] = useState(team_name)
+  const [inviteFlag, setInviteFlag] = useState(invite_flag)
+  const [inviteCode, setInviteCode] = useState(invite_code)
   const navigate = useNavigate()
+
+  const handleGenerateCode = async () => {
+    try {
+      const responseInviteCode = await fetch('https://scrim-api-production.up.railway.app/team/invite-code/team-id/' + team_id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      if (responseInviteCode.ok) {
+        const dataInviteCode = await responseInviteCode.json()
+        setInviteFlag(true)
+        setInviteCode(dataInviteCode.invite_code)
+        console.log('Update successful', teamName)
+        // navigate('/home')
+      } else {
+        // setIsOpenError(true)
+        console.error('Update failed', responseInviteCode)
+      }
+    } catch (error) {
+      // setIsOpenError(true)
+      console.error('Error occurred while Update in:', error)
+    }
+  }
 
   const handleUpdate = async () => {
     // event.preventDefault()
@@ -56,9 +82,8 @@ const Header = (props) => {
         body: JSON.stringify(jsonData),
       })
       if (response.ok) {
-        const data = await response.json()
-        localStorage.setItem('team_name', data.team_name)
-        console.log('Update successful', data)
+        localStorage.setItem('team_name', teamName)
+        console.log('Update successful', teamName)
         // navigate('/home')
       } else {
         // setIsOpenError(true)
@@ -112,8 +137,8 @@ const Header = (props) => {
                     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
                     magna aliquyam erat.
                   </p>
-                  <div className='grid grid-flow-col justify-stretch mt-6 bg-red-800'>
-                    <div className='items-center bg-red-300'>
+                  <div className='grid grid-flow-col justify-stretch mt-6'>
+                    <div className='items-center'>
                       <label className='block text-sm font-medium text-gray-700 mb-2'>Team Name</label>
                       <TextInput value={teamName} onChange={(e) => setTeamName(e.target.value)} />
                       <label className='block text-sm font-medium text-gray-700 mb-2'>Team ID</label>
@@ -121,10 +146,11 @@ const Header = (props) => {
                       <label className='block text-sm font-medium text-gray-700 mb-2'>Game</label>
                       <TextInput disabled={true} value={game_name} />
                     </div>
-                    <div className='text-center bg-amber-300'>
-                      <Button icon={RiGroupLine} color='purple'>
-                        JOIN A TEAM
+                    <div className='text-center'>
+                      <Button className='mb-2' disabled={inviteFlag} icon={RiGroupLine} color='purple' onClick={() => handleGenerateCode()}>
+                        CREATE INVITE CODE
                       </Button>
+                      {inviteFlag === true && <TextInput disabled={true} value={inviteCode} />}
                     </div>
                   </div>
                 </TabPanel>
@@ -140,7 +166,7 @@ const Header = (props) => {
               </TabPanels>
             </TabGroup>
 
-            <div className='grid grid-flow-col justify-stretch mt-6 bg-red-800'>
+            <div className='grid grid-flow-col justify-stretch mt-6'>
               <div className='text-center'></div>
               <div className='text-end'>
                 <Button icon={RiSaveLine} color='purple' onClick={() => handleUpdate()}>
