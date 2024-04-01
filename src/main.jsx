@@ -1,17 +1,17 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./index.css";
-import Root from "./routes/root";
-import ErrorPage from "./error-page";
-import Register from "./routes/register";
-import ChangePassword from "./routes/change-password";
-import Home from "./routes/home";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import './index.css'
+// import Root from "./routes/root";
+import ErrorPage from './error-page'
+import Register from './routes/register'
+import ChangePassword from './routes/change-password'
+import Home from './routes/home'
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <App />,
     errorElement: <ErrorPage />,
     // children: [
@@ -26,21 +26,21 @@ const router = createBrowserRouter([
   //   element: <Contact />,
   // },
   {
-    path: "register",
+    path: 'register',
     element: <Register />,
   },
   {
-    path: "change-password",
+    path: 'change-password',
     element: <ChangePassword />,
   },
   {
-    path: "home",
+    path: 'home',
     element: <Home />,
   },
-]);
+])
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>
-);
+)
