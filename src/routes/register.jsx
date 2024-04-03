@@ -128,8 +128,8 @@ function Register() {
               </label>
               <TextInput
                 type='tel'
-                pattern='[0-9]{3}-[0-9]{3}-[0-9]{4}'
-                placeholder='098-789-7655'
+                pattern='[0]{1}[0-9]{9}'
+                placeholder='0987897655'
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
@@ -140,13 +140,13 @@ function Register() {
               </label>
               <Select defaultValue={gameId} value={gameId} onValueChange={(e) => setGameId(e)}>
                 <SelectItem value='1'>
-                  <div class='inline-flex items-center'>
+                  <div className='inline-flex items-center'>
                     <img src={valorant} className='h-4 w-4 rounded-full me-2' />
                     Valorant
                   </div>
                 </SelectItem>
                 <SelectItem value='2'>
-                  <div class='inline-flex items-center'>
+                  <div className='inline-flex items-center'>
                     <img src={counterstrike2} className='h-4 w-4 rounded-full me-2' />
                     CSGO2
                   </div>

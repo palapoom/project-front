@@ -8,6 +8,8 @@ import ErrorPage from './error-page'
 import Register from './routes/register'
 import ChangePassword from './routes/change-password'
 import Home from './routes/home'
+import JoinATeam from './routes/join-a-team'
+import CreateATeam from './routes/create-a-team'
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
   {
     path: 'home',
     element: <Home />,
+  },
+  {
+    path: 'join-a-team',
+    element: <JoinATeam />,
+  },
+  {
+    path: 'create-a-team',
+    element: <CreateATeam />,
   },
 ])
 

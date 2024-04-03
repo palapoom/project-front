@@ -37,6 +37,14 @@ const Header = (props) => {
   const [isOpenError, setIsOpenError] = useState(false)
   const navigate = useNavigate()
 
+  const handleCreateATeam = async () => {
+    navigate('/create-a-team')
+  }
+
+  const handleJoinATeam = async () => {
+    navigate('/join-a-team')
+  }
+
   const handleGenerateCode = async () => {
     try {
       const responseInviteCode = await fetch('https://scrim-api-production.up.railway.app/team/invite-code/team-id/' + team_id, {
@@ -108,12 +116,12 @@ const Header = (props) => {
           <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
           <div className='grid grid-flow-col justify-stretch mt-6'>
             <div className='text-center'>
-              <Button icon={RiAddLine} color='purple'>
+              <Button icon={RiAddLine} color='purple' onClick={() => handleCreateATeam()}>
                 CREATE A TEAM
               </Button>
             </div>
             <div className='text-center'>
-              <Button icon={RiGroupLine} color='purple'>
+              <Button icon={RiGroupLine} color='purple' onClick={() => handleJoinATeam()}>
                 JOIN A TEAM
               </Button>
             </div>
@@ -210,10 +218,10 @@ const Header = (props) => {
       <Dialog open={isOpenPleaseFill} onClose={(val) => setIsOpenPleaseFill(val)} static={true}>
         <DialogPanel>
           <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
-            Please fill in team name fields.
+            Please fill in team name field.
           </h3>
           <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
-            Please fill in team name fields.
+            Please fill in team name field.
           </p>
           <Button className='mt-8 w-full' onClick={() => setIsOpenPleaseFill(false)}>
             Got it!
