@@ -32,6 +32,9 @@ const Header = (props) => {
   const [teamName, setTeamName] = useState(team_name)
   const [inviteFlag, setInviteFlag] = useState(invite_flag)
   const [inviteCode, setInviteCode] = useState(invite_code)
+  const [isOpenPleaseFill, setIsOpenPleaseFill] = useState(false)
+  const [isOpenSuccess, setIsOpenSuccess] = useState(false)
+  const [isOpenError, setIsOpenError] = useState(false)
   const navigate = useNavigate()
 
   const handleGenerateCode = async () => {
@@ -62,8 +65,8 @@ const Header = (props) => {
     // event.preventDefault()
 
     if (!teamName) {
-      console.error('Please fill in all fields')
-      // setIsOpenPleaseFill(true)
+      console.error('Please fill in team name fields.')
+      setIsOpenPleaseFill(true)
       return
     }
 
@@ -83,14 +86,15 @@ const Header = (props) => {
       })
       if (response.ok) {
         localStorage.setItem('team_name', teamName)
+        setIsOpenSuccess(true)
         console.log('Update successful', teamName)
         // navigate('/home')
       } else {
-        // setIsOpenError(true)
+        setIsOpenError(true)
         console.error('Update failed', response)
       }
     } catch (error) {
-      // setIsOpenError(true)
+      setIsOpenError(true)
       console.error('Error occurred while Update in:', error)
     }
   }
@@ -155,13 +159,12 @@ const Header = (props) => {
                   </div>
                 </TabPanel>
                 <TabPanel>
-                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
-                    Diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat. Lorem ipsum dolor sit amet, consetetur
-                    sadipscing elitr.
-                  </p>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Members Detail</p>
                 </TabPanel>
                 <TabPanel>
-                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Hello.</p>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+                    Manage Scrim Detail
+                  </p>
                 </TabPanel>
               </TabPanels>
             </TabGroup>
@@ -204,6 +207,37 @@ const Header = (props) => {
   }
   return (
     <div className='flex h-screen bg-gray-100'>
+      <Dialog open={isOpenPleaseFill} onClose={(val) => setIsOpenPleaseFill(val)} static={true}>
+        <DialogPanel>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
+            Please fill in team name fields.
+          </h3>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+            Please fill in team name fields.
+          </p>
+          <Button className='mt-8 w-full' onClick={() => setIsOpenPleaseFill(false)}>
+            Got it!
+          </Button>
+        </DialogPanel>
+      </Dialog>
+      <Dialog open={isOpenSuccess} onClose={(val) => setIsOpenSuccess(val)} static={true}>
+        <DialogPanel>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Success.</h3>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Update successfuly.</p>
+          <Button className='mt-8 w-full' onClick={() => setIsOpenSuccess(false)}>
+            Got it!
+          </Button>
+        </DialogPanel>
+      </Dialog>
+      <Dialog open={isOpenError} onClose={(val) => setIsOpenError(val)} static={true}>
+        <DialogPanel>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Error.</h3>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Email already exist.</p>
+          <Button className='mt-8 w-full' onClick={() => setIsOpenError(false)}>
+            Got it!
+          </Button>
+        </DialogPanel>
+      </Dialog>
       <div className='hidden md:flex flex-col w-64 bg-gray-800'>
         <div className='flex items-center justify-center h-16 bg-gray-900'>
           <span className='text-white font-bold uppercase'>Scrim</span>
