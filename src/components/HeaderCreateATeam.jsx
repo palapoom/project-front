@@ -28,7 +28,7 @@ const HeaderCreateATeam = (props) => {
     }
     console.log(jsonData)
     try {
-      const response = await fetch('https://scrim-api-production.up.railway.app/create/user-id/' + user_id, {
+      const response = await fetch('https://scrim-api-production.up.railway.app/team/create/user-id/' + user_id, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

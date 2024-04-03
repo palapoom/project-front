@@ -25,7 +25,7 @@ const HeaderJoinATeam = (props) => {
     }
     console.log(jsonData)
     try {
-      const response = await fetch('https://scrim-api-production.up.railway.app/join', {
+      const response = await fetch('https://scrim-api-production.up.railway.app/team/join', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
