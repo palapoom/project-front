@@ -8,6 +8,8 @@ import {
   Divider,
   Card,
   TextInput,
+  List,
+  ListItem,
   Select,
   SelectItem,
   Dialog,
@@ -21,6 +23,7 @@ import {
   RiLogoutBoxRLine,
   RiSearchLine,
   RiRefreshLine,
+  RiCloseCircleLine,
   RiGroupLine,
   RiAddLine,
   RiShiningFill,
@@ -35,7 +38,86 @@ const Header = (props) => {
   const [isOpenPleaseFill, setIsOpenPleaseFill] = useState(false)
   const [isOpenSuccess, setIsOpenSuccess] = useState(false)
   const [isOpenError, setIsOpenError] = useState(false)
+  const [member, setMember] = useState([])
   const navigate = useNavigate()
+
+  useEffect(() => {
+    getMember()
+  }, [])
+
+  const getMember = async () => {
+    try {
+      const responseMember = await fetch(
+        'https://scrim-api-production.up.railway.app/team/member/team-id/' + localStorage.getItem('team_id')
+      )
+      if (responseMember.ok) {
+        const dataMember = await responseMember.json()
+        setMember(dataMember.members)
+        console.log('Load Member successful', dataMember)
+      } else {
+        console.error('Load Member failed', responseMember)
+      }
+    } catch (error) {
+      console.error('Error occurred while Load Member in:', error)
+    }
+  }
+
+  const handleKick = async (userId) => {
+    const jsonData = {
+      user_id: userId,
+    }
+    console.log('kick', jsonData)
+    try {
+      const responseKick = await fetch('https://scrim-api-production.up.railway.app/kick-member', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+      const dataKick = await responseKick.json()
+      if (responseKick.ok) {
+        setIsOpenSuccess(true)
+        console.log('Kick successful', userId)
+      } else {
+        setIsOpenError(true)
+        console.error(dataKick)
+        console.error('Kick failed', userId)
+      }
+    } catch (error) {
+      setIsOpenError(true)
+      console.error('Error occurred while Kick in:', error)
+    }
+  }
+
+  const handleChangeRole = async (userId, roleToChange) => {
+    const jsonData = {
+      user_id: userId,
+      role: roleToChange,
+    }
+    console.log('Change Role', jsonData)
+    try {
+      const responseChangeRole = await fetch('https://scrim-api-production.up.railway.app/change-role', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+
+      if (responseChangeRole.ok) {
+        getMember()
+        setIsOpenSuccess(true)
+        console.log('ChangeRole successful', userId)
+      } else {
+        setIsOpenError(true)
+        console.error('ChangeRole failed', userId)
+      }
+    } catch (error) {
+      setIsOpenError(true)
+      console.error('Error occurred while ChangeRole in:', error)
+    }
+  }
 
   const handleCreateATeam = async () => {
     navigate('/create-a-team')
@@ -107,6 +189,28 @@ const Header = (props) => {
     }
   }
 
+  let memberComponent = member.map((item, index) => {
+    let changeRoleDropdown = (
+      <Select defaultValue={item.role} value={item.role} onValueChange={(e) => handleChangeRole(item.user_id, e)}>
+        <SelectItem value='Manager'>Manager</SelectItem>
+        <SelectItem value='Player'>Player</SelectItem>
+      </Select>
+    )
+
+    return (
+      <ListItem key={index}>
+        <span>{item.nickname}</span>
+        <span>{item.role}</span>
+        <span>{changeRoleDropdown}</span>
+        <span>
+          <Button variant='light'>
+            <Icon icon={RiCloseCircleLine} onClick={() => handleKick(item.user_id)} variant='simple' tooltip='Kick' color='red' />
+          </Button>
+        </span>
+      </ListItem>
+    )
+  })
+
   let teamComponent
   if (team_id == 'null') {
     teamComponent = (
@@ -168,6 +272,15 @@ const Header = (props) => {
                 </TabPanel>
                 <TabPanel>
                   <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Members Detail</p>
+                  <div className='mx-auto max-w-md'>
+                    <ListItem>
+                      <span>Nickname</span>
+                      <span>Role</span>
+                      <span>Change Role</span>
+                      <span>Kick</span>
+                    </ListItem>
+                    <List>{memberComponent}</List>
+                  </div>
                 </TabPanel>
                 <TabPanel>
                   <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
