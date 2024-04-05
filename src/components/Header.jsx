@@ -77,6 +77,7 @@ const Header = (props) => {
       })
       const dataKick = await responseKick.json()
       if (responseKick.ok) {
+        getMember()
         setIsOpenSuccess(true)
         console.log('Kick successful', userId)
       } else {
