@@ -1,29 +1,47 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Divider, Card, TextInput, Select, SelectItem, Dialog, DialogPanel, Button, Icon } from '@tremor/react'
 import { RiUserSettingsLine, RiLogoutBoxRLine, RiGroupLine, RiShiningFill, RiArrowRightLine } from '@remixicon/react'
 import { Link, useNavigate } from 'react-router-dom'
 import valorant from '../assets/valorant.svg'
 import counterstrike2 from '../assets/counterstrike2.svg'
+import { createClient } from '@supabase/supabase-js'
+import { v4 as uuidv4 } from 'uuid'
 
 const HeaderCreateATeam = (props) => {
   const { user_id, nickname, team_id, team_name, role, game_name, invite_code, invite_flag } = props
   const [teamName, setTeamName] = useState('')
   const [gameId, setGameId] = useState('1')
+  const [media, setMedia] = useState('')
   const [isOpenPleaseFill, setIsOpenPleaseFill] = useState(false)
   const [isOpenSuccess, setIsOpenSuccess] = useState(false)
   const [isOpenError, setIsOpenError] = useState(false)
   const navigate = useNavigate()
 
-  const handleJoinATeam = async () => {
-    if (!teamName) {
-      console.error('Please fill in team name fields.')
+  const supabase = createClient(process.env.SUPABASE_URL, process.env.SERVICE_ROLE_KEY)
+
+  const handleUploadImage = async (e) => {
+    let file = e.target.files[0]
+    const fileName = uuidv4()
+
+    const { data, error } = await supabase.storage.from('images').upload('/' + fileName, file)
+
+    if (data) {
+      setMedia(fileName)
+    } else {
+      console.log(error)
+    }
+  }
+
+  const handleCreateATeam = async () => {
+    if (!teamName || !media) {
+      console.error('Please fill in all fields.')
       setIsOpenPleaseFill(true)
       return
     }
 
     const jsonData = {
       team_name: teamName,
-      team_logo: 'https://seeklogo.com/images/V/valorant-logo-FAB2CA0E55-seeklogo.com.png',
+      team_logo: media,
       game_id: parseInt(gameId),
     }
     console.log(jsonData)
@@ -36,9 +54,10 @@ const HeaderCreateATeam = (props) => {
         body: JSON.stringify(jsonData),
       })
       if (response.ok) {
+        const data = await response.json()
         localStorage.setItem('role', 'Manager')
         // ขอ respone team_id, invite_code, invite_flag
-        // localStorage.setItem('team_id', data.team_id)
+        localStorage.setItem('team_id', data.team_id)
         localStorage.setItem('team_name', teamName)
         setIsOpenSuccess(true)
         console.log('Create successful', teamName)
@@ -90,8 +109,14 @@ const HeaderCreateATeam = (props) => {
                 </SelectItem>
               </Select>
             </div>
+            <div className='mb-4'>
+              <input type='file' onChange={(e) => handleUploadImage(e)} />
+              {media && (
+                <img src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${media}`} className='w-24 h-24 mt-4' />
+              )}
+            </div>
             <div className='text-center'>
-              <Button icon={RiArrowRightLine} color='purple' onClick={() => handleJoinATeam()}>
+              <Button icon={RiArrowRightLine} color='purple' onClick={() => handleCreateATeam()}>
                 CREATE
               </Button>
             </div>
@@ -120,11 +145,9 @@ const HeaderCreateATeam = (props) => {
       <Dialog open={isOpenPleaseFill} onClose={(val) => setIsOpenPleaseFill(val)} static={true}>
         <DialogPanel>
           <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
-            Please fill in team name field.
+            Please fill in all field.
           </h3>
-          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
-            Please fill in team name field.
-          </p>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Please fill in all field.</p>
           <Button className='mt-8 w-full' onClick={() => setIsOpenPleaseFill(false)}>
             Got it!
           </Button>

@@ -14,8 +14,6 @@ import {
   Divider,
   Card,
   TextInput,
-  List,
-  ListItem,
   Select,
   SelectItem,
   Dialog,
@@ -27,17 +25,18 @@ import {
   RiSaveLine,
   RiUserSettingsLine,
   RiLogoutBoxRLine,
-  RiSearchLine,
-  RiRefreshLine,
   RiCloseCircleLine,
   RiGroupLine,
   RiAddLine,
   RiShiningFill,
 } from '@remixicon/react'
 import { Link, useNavigate } from 'react-router-dom'
+import { createClient } from '@supabase/supabase-js'
+import { v4 as uuidv4 } from 'uuid'
 
 const Header = (props) => {
-  const { nickname, team_id, team_name, role, game_name, invite_code, invite_flag } = props
+  const { nickname, team_id, team_name, role, game_name, invite_code, invite_flag, team_logo } = props
+  const [media, setMedia] = useState(team_logo)
   const [teamName, setTeamName] = useState(team_name)
   const [inviteFlag, setInviteFlag] = useState(invite_flag)
   const [inviteCode, setInviteCode] = useState(invite_code)
@@ -50,6 +49,12 @@ const Header = (props) => {
   useEffect(() => {
     getMember()
   }, [])
+
+  // const supabase = createClient(process.env.SUPABASE_URL, process.env.SERVICE_ROLE_KEY)
+  const supabase = createClient(
+    'https://pkeejyrcevjrgrgljqfw.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZWVqeXJjZXZqcmdyZ2xqcWZ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTgwMDA2MCwiZXhwIjoyMDI3Mzc2MDYwfQ.HcJ80sv2Xs7Q07R_qAQg4eS-1zOsXG4au8EMFMJpt3w'
+  )
 
   const getMember = async () => {
     try {
@@ -65,6 +70,19 @@ const Header = (props) => {
       }
     } catch (error) {
       console.error('Error occurred while Load Member in:', error)
+    }
+  }
+
+  const handleUploadImage = async (e) => {
+    let file = e.target.files[0]
+    const fileName = uuidv4()
+
+    const { data, error } = await supabase.storage.from('images').upload('/' + fileName, file)
+
+    if (data) {
+      setMedia(fileName)
+    } else {
+      console.log(error)
     }
   }
 
@@ -157,8 +175,6 @@ const Header = (props) => {
   }
 
   const handleUpdate = async () => {
-    // event.preventDefault()
-
     if (!teamName) {
       console.error('Please fill in team name fields.')
       setIsOpenPleaseFill(true)
@@ -168,7 +184,7 @@ const Header = (props) => {
     const jsonData = {
       team_id: parseInt(team_id),
       team_name: teamName,
-      // team_logo: "https://seeklogo.com/images/V/valorant-logo-FAB2CA0E55-seeklogo.com.png",
+      team_logo: media,
     }
     console.log(jsonData)
     try {
@@ -181,9 +197,9 @@ const Header = (props) => {
       })
       if (response.ok) {
         localStorage.setItem('team_name', teamName)
+        localStorage.setItem('team_logo', media)
         setIsOpenSuccess(true)
         console.log('Update successful', teamName)
-        // navigate('/home')
       } else {
         setIsOpenError(true)
         console.error('Update failed', response)
@@ -207,6 +223,31 @@ const Header = (props) => {
         <TableCell>{item.nickname}</TableCell>
         <TableCell>{item.role}</TableCell>
         <TableCell>{changeRoleDropdown}</TableCell>
+        <TableCell>
+          <Button variant='light'>
+            <Icon icon={RiCloseCircleLine} onClick={() => handleKick(item.user_id)} variant='simple' tooltip='Kick' color='red' />
+          </Button>
+        </TableCell>
+      </TableRow>
+    )
+  })
+
+  let scrimComponent = member.map((item, index) => {
+    return (
+      <TableRow key={index}>
+        <TableCell>
+          <img
+            src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAcChzAxvZSCvQcxIAeHIiVw7u9_JNZriit8Utcr63gw&s'
+            className='h-4 w-4 rounded-full me-2'
+          />
+        </TableCell>
+        <TableCell>{item.role}</TableCell>
+        <TableCell>Lotus</TableCell>
+        <TableCell>2024-04-02</TableCell>
+        <TableCell>02:00:00</TableCell>
+        <TableCell>
+          <Button onClick={() => handleKick(item.user_id)}>Accept Offer</Button>
+        </TableCell>
         <TableCell>
           <Button variant='light'>
             <Icon icon={RiCloseCircleLine} onClick={() => handleKick(item.user_id)} variant='simple' tooltip='Kick' color='red' />
@@ -266,12 +307,29 @@ const Header = (props) => {
                       <TextInput disabled={true} value={team_id} />
                       <label className='block text-sm font-medium text-gray-700 mb-2'>Game</label>
                       <TextInput disabled={true} value={game_name} />
+                      <div className='mb-4'>
+                        <input type='file' onChange={(e) => handleUploadImage(e)} />
+                        {media && (
+                          <img
+                            src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${media}`}
+                            className='w-24 h-24 mt-4'
+                          />
+                        )}
+                      </div>
                     </div>
                     <div className='text-center'>
                       <Button className='mb-2' disabled={inviteFlag} icon={RiGroupLine} color='purple' onClick={() => handleGenerateCode()}>
                         CREATE INVITE CODE
                       </Button>
                       {inviteFlag === true && <TextInput disabled={true} value={inviteCode} />}
+                    </div>
+                  </div>
+                  <div className='grid grid-flow-col justify-stretch mt-6'>
+                    <div className='text-center'></div>
+                    <div className='text-end'>
+                      <Button icon={RiSaveLine} color='purple' onClick={() => handleUpdate()}>
+                        SAVE TEAM INFO
+                      </Button>
                     </div>
                   </div>
                 </TabPanel>
@@ -295,18 +353,26 @@ const Header = (props) => {
                   <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
                     Manage Scrim Detail
                   </p>
+                  <div className=''>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableHeaderCell>Logo</TableHeaderCell>
+                          <TableHeaderCell>Team Name</TableHeaderCell>
+                          <TableHeaderCell>Map</TableHeaderCell>
+                          <TableHeaderCell>Date</TableHeaderCell>
+                          <TableHeaderCell>Time</TableHeaderCell>
+                          <TableHeaderCell>Action</TableHeaderCell>
+                          <TableHeaderCell>Cancel</TableHeaderCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>{scrimComponent}</TableBody>
+                    </Table>
+                  </div>
                 </TabPanel>
               </TabPanels>
             </TabGroup>
 
-            <div className='grid grid-flow-col justify-stretch mt-6'>
-              <div className='text-center'></div>
-              <div className='text-end'>
-                <Button icon={RiSaveLine} color='purple' onClick={() => handleUpdate()}>
-                  SAVE TEAM INFO
-                </Button>
-              </div>
-            </div>
             <p className='text-center text-slate-400'>Card</p>
           </Card>
         </>

@@ -24,6 +24,7 @@ function Home() {
       if (responseTeam.ok) {
         const dataTeam = await responseTeam.json()
         localStorage.setItem('team_name', dataTeam.team_name)
+        localStorage.setItem('team_logo', dataTeam.team_logo)
         setInviteFlag(dataTeam.invite_flag)
         setInviteCode(dataTeam.invite_code)
         console.log('Load Team successful', dataTeam)
@@ -45,8 +46,8 @@ function Home() {
         game_name={localStorage.getItem('game_name')}
         invite_code={inviteCode}
         invite_flag={inviteFlag}
+        team_logo={localStorage.getItem('team_logo')}
       />
-      <p> Blue</p>
     </div>
   )
 }
