@@ -75,14 +75,12 @@ const Header = (props) => {
         },
         body: JSON.stringify(jsonData),
       })
-      const dataKick = await responseKick.json()
       if (responseKick.ok) {
         getMember()
         setIsOpenSuccess(true)
         console.log('Kick successful', userId)
       } else {
         setIsOpenError(true)
-        console.error(dataKick)
         console.error('Kick failed', userId)
       }
     } catch (error) {
