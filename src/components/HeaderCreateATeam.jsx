@@ -17,6 +17,8 @@ const HeaderCreateATeam = (props) => {
   const [isOpenError, setIsOpenError] = useState(false)
   const navigate = useNavigate()
 
+  console.log(process.env.SUPABASE_URL)
+
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SERVICE_ROLE_KEY)
 
   const handleUploadImage = async (e) => {
