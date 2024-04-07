@@ -5,6 +5,12 @@ import {
   TabList,
   TabPanel,
   TabPanels,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
   Divider,
   Card,
   TextInput,
@@ -197,16 +203,16 @@ const Header = (props) => {
     )
 
     return (
-      <ListItem key={index}>
-        <span>{item.nickname}</span>
-        <span>{item.role}</span>
-        <span>{changeRoleDropdown}</span>
-        <span>
+      <TableRow key={index}>
+        <TableCell>{item.nickname}</TableCell>
+        <TableCell>{item.role}</TableCell>
+        <TableCell>{changeRoleDropdown}</TableCell>
+        <TableCell>
           <Button variant='light'>
             <Icon icon={RiCloseCircleLine} onClick={() => handleKick(item.user_id)} variant='simple' tooltip='Kick' color='red' />
           </Button>
-        </span>
-      </ListItem>
+        </TableCell>
+      </TableRow>
     )
   })
 
@@ -272,13 +278,17 @@ const Header = (props) => {
                 <TabPanel>
                   <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Members Detail</p>
                   <div className='mx-auto max-w-md'>
-                    <ListItem>
-                      <span>Nickname</span>
-                      <span>Role</span>
-                      <span>Change Role</span>
-                      <span>Kick</span>
-                    </ListItem>
-                    <List>{memberComponent}</List>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableHeaderCell>Nickname</TableHeaderCell>
+                          <TableHeaderCell>Role</TableHeaderCell>
+                          <TableHeaderCell>Change Role</TableHeaderCell>
+                          <TableHeaderCell>Kick</TableHeaderCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>{memberComponent}</TableBody>
+                    </Table>
                   </div>
                 </TabPanel>
                 <TabPanel>
