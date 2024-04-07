@@ -89,6 +89,9 @@ const HeaderJoinATeam = (props) => {
     localStorage.removeItem('team_id')
     localStorage.removeItem('team_name')
     localStorage.removeItem('user_name')
+    localStorage.removeItem('invite_code')
+    localStorage.removeItem('invite_flag')
+    localStorage.removeItem('team_logo')
     console.log('Logout successful')
     navigate('/')
   }

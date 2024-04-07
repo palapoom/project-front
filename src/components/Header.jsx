@@ -20,6 +20,7 @@ import {
   DialogPanel,
   Button,
   Icon,
+  DatePicker,
 } from '@tremor/react'
 import {
   RiSaveLine,
@@ -35,19 +36,82 @@ import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
 
 const Header = (props) => {
+  const mock = [
+    {
+      scrim_id: 2,
+      team_id: 1,
+      team_logo: null,
+      team_name: 'Team A',
+      scrim_map: 'Ascent',
+      scrim_date: '2024-04-02T00:00:00Z',
+      scrim_time: '0000-01-01T02:00:00Z',
+      scrim_status: 'unmatched',
+    },
+    {
+      scrim_id: 3,
+      team_id: 1,
+      team_logo: null,
+      team_name: 'Team A',
+      scrim_map: 'Split',
+      scrim_date: '2024-04-02T00:00:00Z',
+      scrim_time: '0000-01-01T02:00:00Z',
+      scrim_status: 'unmatched',
+    },
+    {
+      scrim_id: 7,
+      team_id: 7,
+      team_logo: 'aaff00cc-f74a-4f11-82a3-2cb613b9447c',
+      team_name: 'Team E',
+      scrim_map: 'Lotus',
+      scrim_date: '2024-04-02T00:00:00Z',
+      scrim_time: '0000-01-01T02:00:00Z',
+      scrim_status: 'unmatched',
+    },
+    {
+      scrim_id: 8,
+      team_id: 7,
+      team_logo: 'aaff00cc-f74a-4f11-82a3-2cb613b9447c',
+      team_name: 'Team E',
+      scrim_map: 'Lotus',
+      scrim_date: '2024-04-02T00:00:00Z',
+      scrim_time: '0000-01-01T02:00:00Z',
+      scrim_status: 'unmatched',
+    },
+    {
+      scrim_id: 6,
+      team_id: 7,
+      team_logo: 'aaff00cc-f74a-4f11-82a3-2cb613b9447c',
+      team_name: 'Team E',
+      scrim_map: 'Lotus',
+      scrim_date: '2024-04-02T00:00:00Z',
+      scrim_time: '0000-01-01T02:00:00Z',
+      scrim_status: 'unmatched',
+    },
+  ]
+
   const { nickname, team_id, team_name, role, game_name, invite_code, invite_flag, team_logo } = props
+  const [scrimDate, setScrimDate] = useState(undefined)
+  const [scrimTime, setScrimTime] = useState('')
+  const [scrimMap, setScrimMap] = useState()
+  const [scrim, setScrim] = useState([]) // can mock
+  const [scrimOffer, setScrimOffer] = useState([])
   const [media, setMedia] = useState(team_logo)
   const [teamName, setTeamName] = useState(team_name)
-  const [inviteFlag, setInviteFlag] = useState(invite_flag)
+  const [inviteFlag, setInviteFlag] = useState(invite_flag == 'true')
   const [inviteCode, setInviteCode] = useState(invite_code)
+  const [selectedMapType, setSelectedMapType] = useState('all')
+  const [selectedMaps, setSelectedMaps] = useState([])
   const [isOpenPleaseFill, setIsOpenPleaseFill] = useState(false)
   const [isOpenSuccess, setIsOpenSuccess] = useState(false)
   const [isOpenError, setIsOpenError] = useState(false)
+  const [isOpenPostScrim, setIsOpenPostScrim] = useState(false)
   const [member, setMember] = useState([])
   const navigate = useNavigate()
 
   useEffect(() => {
     getMember()
+    getScrim()
+    getScrimOffer()
   }, [])
 
   // const supabase = createClient(process.env.SUPABASE_URL, process.env.SERVICE_ROLE_KEY)
@@ -55,6 +119,49 @@ const Header = (props) => {
     'https://pkeejyrcevjrgrgljqfw.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZWVqeXJjZXZqcmdyZ2xqcWZ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTgwMDA2MCwiZXhwIjoyMDI3Mzc2MDYwfQ.HcJ80sv2Xs7Q07R_qAQg4eS-1zOsXG4au8EMFMJpt3w'
   )
+
+  const getScrimOffer = async () => {
+    try {
+      const responseScrimOffer = await fetch(
+        'https://scrim-api-production.up.railway.app/scrim/offer/team-id/' + localStorage.getItem('team_id')
+      )
+      if (responseScrimOffer.ok) {
+        const dataScrimOffer = await responseScrimOffer.json()
+        if (dataScrimOffer.scrims == null) {
+          setScrimOffer([])
+        } else {
+          setScrimOffer(dataScrimOffer.scrims)
+        }
+        console.log('Load ScrimOffer successful', dataScrimOffer)
+      } else {
+        console.error('Load ScrimOffer failed', responseScrimOffer)
+      }
+    } catch (error) {
+      console.error('Error occurred while Load ScrimOffer in:', error)
+    }
+  }
+
+  const getScrim = async () => {
+    try {
+      const responseScrim = await fetch('https://scrim-api-production.up.railway.app/scrim')
+      if (responseScrim.ok) {
+        const dataScrim = await responseScrim.json()
+        setScrim(dataScrim)
+        console.log('Load Scrim successful', dataScrim)
+      } else {
+        console.error('Load Scrim failed', responseScrim)
+      }
+    } catch (error) {
+      console.error('Error occurred while Load Scrim in:', error)
+    }
+  }
+
+  const filteredScrim = scrim.filter((item) => {
+    if (selectedMapType === 'some') {
+      return selectedMaps.includes(item.scrim_map)
+    }
+    return true
+  })
 
   const getMember = async () => {
     try {
@@ -70,6 +177,59 @@ const Header = (props) => {
       }
     } catch (error) {
       console.error('Error occurred while Load Member in:', error)
+    }
+  }
+
+  const handleMapChange = (event) => {
+    const { value } = event.target
+    const index = selectedMaps.indexOf(value)
+    if (index === -1) {
+      setSelectedMaps([...selectedMaps, value])
+    } else {
+      const updatedMaps = [...selectedMaps]
+      updatedMaps.splice(index, 1)
+      setSelectedMaps(updatedMaps)
+    }
+  }
+
+  const handlePostScrim = async () => {
+    try {
+      let gameId
+      if (game_name == 'Valorant') {
+        gameId = 1
+      } else if (game_name == 'CSGO2') {
+        gameId = 2
+      }
+
+      const jsonData = {
+        scrim_date: scrimDate.toLocaleDateString(),
+        scrim_time: scrimTime,
+        scrim_map: scrimMap,
+        team_id: parseInt(team_id),
+        game_id: parseInt(gameId),
+      }
+      console.log('Post Scrim', jsonData)
+
+      const responseChangeRole = await fetch('https://scrim-api-production.up.railway.app/scrim', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+
+      if (responseChangeRole.ok) {
+        // getMember()
+        setIsOpenSuccess(true)
+        setIsOpenPostScrim(false)
+        console.log('PostScrim successful')
+      } else {
+        setIsOpenError(true)
+        console.error('PostScrim failed')
+      }
+    } catch (error) {
+      setIsOpenError(true)
+      console.error('Error occurred while PostScrim in:', error)
     }
   }
 
@@ -160,10 +320,10 @@ const Header = (props) => {
       })
       if (responseInviteCode.ok) {
         const dataInviteCode = await responseInviteCode.json()
+        localStorage.setItem('invite_flag', true)
         setInviteFlag(true)
         setInviteCode(dataInviteCode.invite_code)
         console.log('Update successful', teamName)
-        // navigate('/home')
       } else {
         // setIsOpenError(true)
         console.error('Update failed', responseInviteCode)
@@ -210,6 +370,62 @@ const Header = (props) => {
     }
   }
 
+  const handleScrimAccept = async (scrimId, teamId) => {
+    const jsonData = {
+      scrim_id: parseInt(scrimId),
+      team_id: parseInt(teamId),
+    }
+    console.log('ScrimAccept', jsonData)
+    try {
+      const response = await fetch('https://scrim-api-production.up.railway.app/accept', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+      if (response.ok) {
+        getScrimOffer()
+        setIsOpenSuccess(true)
+        console.log('ScrimAccept successful', teamName)
+      } else {
+        setIsOpenError(true)
+        console.error('ScrimAccept failed', response)
+      }
+    } catch (error) {
+      setIsOpenError(true)
+      console.error('Error occurred while ScrimAccept in:', error)
+    }
+  }
+
+  const handleScrimCancel = async (scrimId, teamId) => {
+    const jsonData = {
+      scrim_id: parseInt(scrimId),
+      team_id: parseInt(teamId),
+    }
+    console.log('ScrimCancel', jsonData)
+    try {
+      const response = await fetch('https://scrim-api-production.up.railway.app/cancel', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+      if (response.ok) {
+        getScrimOffer()
+        setIsOpenSuccess(true)
+        console.log('ScrimCancel successful', teamName)
+      } else {
+        setIsOpenError(true)
+        console.error('ScrimCancel failed', response)
+      }
+    } catch (error) {
+      setIsOpenError(true)
+      console.error('Error occurred while ScrimCancel in:', error)
+    }
+  }
+
   let memberComponent = member.map((item, index) => {
     let changeRoleDropdown = (
       <Select defaultValue={item.role} value={item.role} onValueChange={(e) => handleChangeRole(item.user_id, e)}>
@@ -232,26 +448,68 @@ const Header = (props) => {
     )
   })
 
-  let scrimComponent = member.map((item, index) => {
+  let scrimOfferComponent = scrimOffer.map((item, index) => {
+    const scrimDate = new Date(item.scrim_date)
+    const scrimTime = new Date(item.scrim_time)
+    const hours = scrimTime.getUTCHours().toString().padStart(2, '0')
+    const minutes = scrimTime.getUTCMinutes().toString().padStart(2, '0')
+    const formattedTime = `${hours}:${minutes}`
+
     return (
       <TableRow key={index}>
         <TableCell>
-          <img
-            src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAcChzAxvZSCvQcxIAeHIiVw7u9_JNZriit8Utcr63gw&s'
-            className='h-4 w-4 rounded-full me-2'
-          />
+          <div className='flex items-center'>
+            <img
+              src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
+              className='h-4 w-4 rounded-full me-2'
+            />
+            {item.team_name}
+          </div>
         </TableCell>
-        <TableCell>{item.role}</TableCell>
-        <TableCell>Lotus</TableCell>
-        <TableCell>2024-04-02</TableCell>
-        <TableCell>02:00:00</TableCell>
+        <TableCell>{item.scrim_map}</TableCell>
+        <TableCell>{scrimDate.toLocaleDateString()}</TableCell>
+        <TableCell>{formattedTime}</TableCell>
         <TableCell>
-          <Button onClick={() => handleKick(item.user_id)}>Accept Offer</Button>
+          <Button onClick={() => handleScrimAccept(item.scrim_id, item.team_id)}>Accept Offer</Button>
         </TableCell>
         <TableCell>
           <Button variant='light'>
-            <Icon icon={RiCloseCircleLine} onClick={() => handleKick(item.user_id)} variant='simple' tooltip='Kick' color='red' />
+            <Icon
+              icon={RiCloseCircleLine}
+              onClick={() => handleScrimCancel(item.scrim_id, item.team_id)}
+              variant='simple'
+              tooltip='Cancel'
+              color='red'
+            />
           </Button>
+        </TableCell>
+      </TableRow>
+    )
+  })
+
+  let scrimComponent = filteredScrim.map((item, index) => {
+    const scrimDate = new Date(item.scrim_date)
+    const scrimTime = new Date(item.scrim_time)
+    const hours = scrimTime.getUTCHours().toString().padStart(2, '0')
+    const minutes = scrimTime.getUTCMinutes().toString().padStart(2, '0')
+    const formattedTime = `${hours}:${minutes}`
+
+    return (
+      <TableRow key={index}>
+        <TableCell>
+          <div className='flex items-center'>
+            <img
+              src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
+              className='h-4 w-4 rounded-full me-2'
+            />
+            {item.team_name}
+          </div>
+        </TableCell>
+        <TableCell>{item.scrim_map}</TableCell>
+        <TableCell>{scrimDate.toLocaleDateString()}</TableCell>
+        <TableCell>{formattedTime}</TableCell>
+        <TableCell>
+          <Button onClick={() => handleKick(item.user_id)}>Make Offer</Button>
         </TableCell>
       </TableRow>
     )
@@ -292,6 +550,7 @@ const Header = (props) => {
                 <Tab>Team Settings</Tab>
                 <Tab>Members</Tab>
                 <Tab>Manage Scrim</Tab>
+                <Tab>Search</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
@@ -357,13 +616,129 @@ const Header = (props) => {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableHeaderCell>Logo</TableHeaderCell>
-                          <TableHeaderCell>Team Name</TableHeaderCell>
+                          <TableHeaderCell>Team</TableHeaderCell>
                           <TableHeaderCell>Map</TableHeaderCell>
                           <TableHeaderCell>Date</TableHeaderCell>
                           <TableHeaderCell>Time</TableHeaderCell>
                           <TableHeaderCell>Action</TableHeaderCell>
                           <TableHeaderCell>Cancel</TableHeaderCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>{scrimOfferComponent}</TableBody>
+                    </Table>
+                  </div>
+                </TabPanel>
+                <TabPanel>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Search Detail</p>
+                  <div className='mb-4'>
+                    <label htmlFor='searchMapType' className='block text-sm font-medium text-gray-700 mb-2'>
+                      Maps
+                    </label>
+                    <input
+                      type='radio'
+                      name='searchMapType'
+                      value='all'
+                      checked={selectedMapType === 'all'}
+                      onChange={(e) => setSelectedMapType(e.target.value)}
+                    />
+                    All Maps
+                    <input
+                      type='radio'
+                      name='searchMapType'
+                      value='some'
+                      checked={selectedMapType === 'some'}
+                      onChange={(e) => setSelectedMapType(e.target.value)}
+                    />
+                    Only Some
+                  </div>
+                  <div className='mb-4'>
+                    <input
+                      type='checkbox'
+                      name='searchMap'
+                      value='Haven'
+                      checked={selectedMaps.includes('Haven')}
+                      onChange={handleMapChange}
+                    />
+                    Haven
+                    <input
+                      type='checkbox'
+                      name='searchMap'
+                      value='Bind'
+                      checked={selectedMaps.includes('Bind')}
+                      onChange={handleMapChange}
+                    />
+                    Bind
+                    <input
+                      type='checkbox'
+                      name='searchMap'
+                      value='Split'
+                      checked={selectedMaps.includes('Split')}
+                      onChange={handleMapChange}
+                    />
+                    Split
+                    <input
+                      type='checkbox'
+                      name='searchMap'
+                      value='Ascent'
+                      checked={selectedMaps.includes('Ascent')}
+                      onChange={handleMapChange}
+                    />
+                    Ascent
+                    <input
+                      type='checkbox'
+                      name='searchMap'
+                      value='Icebox'
+                      checked={selectedMaps.includes('Icebox')}
+                      onChange={handleMapChange}
+                    />
+                    Icebox
+                    <input
+                      type='checkbox'
+                      name='searchMap'
+                      value='Breeze'
+                      checked={selectedMaps.includes('Breeze')}
+                      onChange={handleMapChange}
+                    />
+                    Breeze
+                    <input
+                      type='checkbox'
+                      name='searchMap'
+                      value='Fracture'
+                      checked={selectedMaps.includes('Fracture')}
+                      onChange={handleMapChange}
+                    />
+                    Fracture
+                    <input
+                      type='checkbox'
+                      name='searchMap'
+                      value='Lotus'
+                      checked={selectedMaps.includes('Lotus')}
+                      onChange={handleMapChange}
+                    />
+                    Lotus
+                    <input
+                      type='checkbox'
+                      name='searchMap'
+                      value='Sunset'
+                      checked={selectedMaps.includes('Sunset')}
+                      onChange={handleMapChange}
+                    />
+                    Sunset
+                  </div>
+                  <div className='text-center'>
+                    <Button icon={RiAddLine} color='purple' onClick={() => setIsOpenPostScrim(true)}>
+                      POST YOUR REQUEST
+                    </Button>
+                  </div>
+                  <div className='text-center'>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableHeaderCell>Team</TableHeaderCell>
+                          <TableHeaderCell>Map</TableHeaderCell>
+                          <TableHeaderCell>Date</TableHeaderCell>
+                          <TableHeaderCell>Time</TableHeaderCell>
+                          <TableHeaderCell>Action</TableHeaderCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>{scrimComponent}</TableBody>
@@ -387,6 +762,43 @@ const Header = (props) => {
     }
   }
 
+  let gameComponent
+  if (game_name == 'Valorant') {
+    gameComponent = (
+      <div className='mb-4'>
+        <label htmlFor='scrimMap' className='block text-sm font-medium text-gray-700 mb-2'>
+          Map
+        </label>
+        <input type='radio' name='game' value='Haven' onChange={(e) => setScrimMap(e.target.value)} /> Haven
+        <input type='radio' name='game' value='Bind' onChange={(e) => setScrimMap(e.target.value)} /> Bind
+        <input type='radio' name='game' value='Split' onChange={(e) => setScrimMap(e.target.value)} /> Split
+        <input type='radio' name='game' value='Ascent' onChange={(e) => setScrimMap(e.target.value)} /> Ascent
+        <input type='radio' name='game' value='Icebox' onChange={(e) => setScrimMap(e.target.value)} /> Icebox
+        <input type='radio' name='game' value='Breeze' onChange={(e) => setScrimMap(e.target.value)} /> Breeze
+        <input type='radio' name='game' value='Fracture' onChange={(e) => setScrimMap(e.target.value)} /> Fracture
+        <input type='radio' name='game' value='Lotus' onChange={(e) => setScrimMap(e.target.value)} /> Lotus
+        <input type='radio' name='game' value='Sunset' onChange={(e) => setScrimMap(e.target.value)} /> Sunset
+      </div>
+    )
+  } else if (game_name == 'CSGO2') {
+    gameComponent = (
+      <div className='mb-4'>
+        <label htmlFor='scrimMap' className='block text-sm font-medium text-gray-700 mb-2'>
+          Map
+        </label>
+        <input type='radio' name='game' value='Dust 2' onChange={(e) => setScrimMap(e.target.value)} /> Dust 2
+        <input type='radio' name='game' value='Inferno' onChange={(e) => setScrimMap(e.target.value)} /> Inferno
+        <input type='radio' name='game' value='Mirage' onChange={(e) => setScrimMap(e.target.value)} /> Mirage
+        <input type='radio' name='game' value='Nuke' onChange={(e) => setScrimMap(e.target.value)} /> Nuke
+        <input type='radio' name='game' value='Overpass' onChange={(e) => setScrimMap(e.target.value)} /> Overpass
+        <input type='radio' name='game' value='Office' onChange={(e) => setScrimMap(e.target.value)} /> Office
+        <input type='radio' name='game' value='Vertigo' onChange={(e) => setScrimMap(e.target.value)} /> Vertigo
+        <input type='radio' name='game' value='Ancient' onChange={(e) => setScrimMap(e.target.value)} /> Ancient
+        <input type='radio' name='game' value='Anubis' onChange={(e) => setScrimMap(e.target.value)} /> Anubis
+      </div>
+    )
+  }
+
   // props
   const handleSignOut = async () => {
     localStorage.removeItem('email')
@@ -398,11 +810,60 @@ const Header = (props) => {
     localStorage.removeItem('team_id')
     localStorage.removeItem('team_name')
     localStorage.removeItem('user_name')
+    localStorage.removeItem('invite_code')
+    localStorage.removeItem('invite_flag')
+    localStorage.removeItem('team_logo')
     console.log('Logout successful')
     navigate('/')
   }
   return (
     <div className='flex h-screen bg-gray-100'>
+      <Dialog open={isOpenPostScrim} onClose={(val) => setIsOpenPostScrim(val)} static={true}>
+        <DialogPanel>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>POST YOUR REQUEST</h3>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+            <div className='mb-4'>
+              <label htmlFor='scrimDate' className='block text-sm font-medium text-gray-700 mb-2'>
+                Date
+              </label>
+              <DatePicker className='mx-auto max-w-sm' value={scrimDate} onValueChange={(e) => setScrimDate(e)} />
+            </div>
+            <div className='mb-4'>
+              <label htmlFor='scrimTime' className='block text-sm font-medium text-gray-700 mb-2'>
+                Time
+              </label>
+              <input type='radio' name='time' value='00:00' onChange={(e) => setScrimTime(e.target.value)} /> 00:00
+              <input type='radio' name='time' value='01:00' onChange={(e) => setScrimTime(e.target.value)} /> 01:00
+              <input type='radio' name='time' value='02:00' onChange={(e) => setScrimTime(e.target.value)} /> 02:00
+              <input type='radio' name='time' value='03:00' onChange={(e) => setScrimTime(e.target.value)} /> 03:00
+              <input type='radio' name='time' value='04:00' onChange={(e) => setScrimTime(e.target.value)} /> 04:00
+              <input type='radio' name='time' value='05:00' onChange={(e) => setScrimTime(e.target.value)} /> 05:00
+              <input type='radio' name='time' value='06:00' onChange={(e) => setScrimTime(e.target.value)} /> 06:00
+              <input type='radio' name='time' value='07:00' onChange={(e) => setScrimTime(e.target.value)} /> 07:00
+              <input type='radio' name='time' value='08:00' onChange={(e) => setScrimTime(e.target.value)} /> 08:00
+              <input type='radio' name='time' value='09:00' onChange={(e) => setScrimTime(e.target.value)} /> 09:00
+              <input type='radio' name='time' value='10:00' onChange={(e) => setScrimTime(e.target.value)} /> 10:00
+              <input type='radio' name='time' value='11:00' onChange={(e) => setScrimTime(e.target.value)} /> 11:00
+              <input type='radio' name='time' value='12:00' onChange={(e) => setScrimTime(e.target.value)} /> 12:00
+              <input type='radio' name='time' value='13:00' onChange={(e) => setScrimTime(e.target.value)} /> 13:00
+              <input type='radio' name='time' value='14:00' onChange={(e) => setScrimTime(e.target.value)} /> 14:00
+              <input type='radio' name='time' value='15:00' onChange={(e) => setScrimTime(e.target.value)} /> 15:00
+              <input type='radio' name='time' value='16:00' onChange={(e) => setScrimTime(e.target.value)} /> 16:00
+              <input type='radio' name='time' value='17:00' onChange={(e) => setScrimTime(e.target.value)} /> 17:00
+              <input type='radio' name='time' value='18:00' onChange={(e) => setScrimTime(e.target.value)} /> 18:00
+              <input type='radio' name='time' value='19:00' onChange={(e) => setScrimTime(e.target.value)} /> 19:00
+              <input type='radio' name='time' value='20:00' onChange={(e) => setScrimTime(e.target.value)} /> 20:00
+              <input type='radio' name='time' value='21:00' onChange={(e) => setScrimTime(e.target.value)} /> 21:00
+              <input type='radio' name='time' value='22:00' onChange={(e) => setScrimTime(e.target.value)} /> 22:00
+              <input type='radio' name='time' value='23:00' onChange={(e) => setScrimTime(e.target.value)} /> 23:00
+            </div>
+            {gameComponent}
+          </p>
+          <Button className='mt-8 w-full' onClick={() => handlePostScrim()}>
+            Save your request
+          </Button>
+        </DialogPanel>
+      </Dialog>
       <Dialog open={isOpenPleaseFill} onClose={(val) => setIsOpenPleaseFill(val)} static={true}>
         <DialogPanel>
           <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>

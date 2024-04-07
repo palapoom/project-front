@@ -5,8 +5,6 @@ import { useNavigate } from 'react-router-dom'
 function Home() {
   const navigate = useNavigate()
   const [nickname, setNickname] = useState('')
-  const [inviteFlag, setInviteFlag] = useState(false)
-  const [inviteCode, setInviteCode] = useState('')
 
   useEffect(() => {
     const nicknameLocal = localStorage.getItem('nickname')
@@ -25,8 +23,8 @@ function Home() {
         const dataTeam = await responseTeam.json()
         localStorage.setItem('team_name', dataTeam.team_name)
         localStorage.setItem('team_logo', dataTeam.team_logo)
-        setInviteFlag(dataTeam.invite_flag)
-        setInviteCode(dataTeam.invite_code)
+        localStorage.setItem('invite_flag', dataTeam.invite_flag)
+        localStorage.setItem('invite_code', dataTeam.invite_code)
         console.log('Load Team successful', dataTeam)
       } else {
         console.error('Load Team failed', responseTeam)
@@ -44,8 +42,8 @@ function Home() {
         team_name={localStorage.getItem('team_name')}
         role={localStorage.getItem('role')}
         game_name={localStorage.getItem('game_name')}
-        invite_code={inviteCode}
-        invite_flag={inviteFlag}
+        invite_code={localStorage.getItem('invite_code')}
+        invite_flag={localStorage.getItem('invite_flag')}
         team_logo={localStorage.getItem('team_logo')}
       />
     </div>
