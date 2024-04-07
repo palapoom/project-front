@@ -17,9 +17,10 @@ const HeaderCreateATeam = (props) => {
   const [isOpenError, setIsOpenError] = useState(false)
   const navigate = useNavigate()
 
-  console.log(process.env.SUPABASE_URL)
-
-  const supabase = createClient(process.env.SUPABASE_URL, process.env.SERVICE_ROLE_KEY)
+  const supabase = createClient(
+    'https://pkeejyrcevjrgrgljqfw.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZWVqeXJjZXZqcmdyZ2xqcWZ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTgwMDA2MCwiZXhwIjoyMDI3Mzc2MDYwfQ.HcJ80sv2Xs7Q07R_qAQg4eS-1zOsXG4au8EMFMJpt3w'
+  )
 
   const handleUploadImage = async (e) => {
     let file = e.target.files[0]
