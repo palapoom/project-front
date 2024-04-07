@@ -261,7 +261,7 @@ const Header = (props) => {
   if (team_id == 'null') {
     teamComponent = (
       <>
-        <Card className='mx-auto max-w-2xl'>
+        <Card className='mx-auto'>
           <h1 className='text-2xl font-bold'>Scrim Search</h1>
           <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
           <div className='grid grid-flow-col justify-stretch mt-6'>
@@ -284,7 +284,7 @@ const Header = (props) => {
     if (role == 'Manager') {
       teamComponent = (
         <>
-          <Card className='mx-auto max-w-2xl'>
+          <Card className='mx-auto'>
             <h1 className='text-2xl font-bold'>Team</h1>
             <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
             <TabGroup>
@@ -306,7 +306,7 @@ const Header = (props) => {
                       <label className='block text-sm font-medium text-gray-700 mb-2'>Team ID</label>
                       <TextInput disabled={true} value={team_id} />
                       <label className='block text-sm font-medium text-gray-700 mb-2'>Game</label>
-                      <TextInput disabled={true} value={game_name} />
+                      <TextInput className='mb-4' disabled={true} value={game_name} />
                       <div className='mb-4'>
                         <input type='file' onChange={(e) => handleUploadImage(e)} />
                         {media && (

@@ -54,7 +54,7 @@ const HeaderJoinATeam = (props) => {
 
   let joinATeamComponent = (
     <>
-      <Card className='mx-auto max-w-2xl'>
+      <Card className='mx-auto'>
         <h1 className='text-2xl font-bold'>Join a Team</h1>
         <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
         <div className='grid grid-flow-col justify-stretch mt-6'>

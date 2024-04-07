@@ -77,7 +77,7 @@ const HeaderCreateATeam = (props) => {
 
   let joinATeamComponent = (
     <>
-      <Card className='mx-auto max-w-2xl'>
+      <Card className='mx-auto'>
         <h1 className='text-2xl font-bold'>Create a Team</h1>
         <p className='mt-2 text-gray-600'>Basic Details.</p>
         <div className='grid grid-flow-col justify-stretch mt-6'>
