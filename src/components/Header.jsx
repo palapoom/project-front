@@ -377,7 +377,7 @@ const Header = (props) => {
     }
     console.log('ScrimAccept', jsonData)
     try {
-      const response = await fetch('https://scrim-api-production.up.railway.app/accept', {
+      const response = await fetch('https://scrim-api-production.up.railway.app/scrim/accept', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -405,7 +405,7 @@ const Header = (props) => {
     }
     console.log('ScrimCancel', jsonData)
     try {
-      const response = await fetch('https://scrim-api-production.up.railway.app/cancel', {
+      const response = await fetch('https://scrim-api-production.up.railway.app/scrim/cancel', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
