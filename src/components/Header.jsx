@@ -23,6 +23,8 @@ import {
   DatePicker,
 } from '@tremor/react'
 import {
+  RiCloseLine,
+  RiCheckLine,
   RiSaveLine,
   RiUserSettingsLine,
   RiLogoutBoxRLine,
@@ -545,7 +547,7 @@ const Header = (props) => {
                 </TabPanel>
                 <TabPanel>
                   <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Members Detail</p>
-                  <div className='mx-auto max-w-md'>
+                  <div>
                     <Table>
                       <TableHead>
                         <TableRow>
@@ -556,6 +558,91 @@ const Header = (props) => {
                         </TableRow>
                       </TableHead>
                       <TableBody>{memberComponent}</TableBody>
+                    </Table>
+                    <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Role Permissions</p>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableHeaderCell>⠀</TableHeaderCell>
+                          <TableHeaderCell>Manager</TableHeaderCell>
+                          <TableHeaderCell>Player</TableHeaderCell>
+                          <TableHeaderCell>Coach</TableHeaderCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>Can change role</TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCloseLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCloseLine} variant='simple' />
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Can create invite link</TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCloseLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCloseLine} variant='simple' />
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Can search a scrim</TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCloseLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Can kick person in team</TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCloseLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCloseLine} variant='simple' />
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Can check scrim</TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Can accept or reject offer</TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCloseLine} variant='simple' />
+                          </TableCell>
+                          <TableCell>
+                            <Icon icon={RiCheckLine} variant='simple' />
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
                     </Table>
                   </div>
                 </TabPanel>
@@ -698,8 +785,6 @@ const Header = (props) => {
                 </TabPanel>
               </TabPanels>
             </TabGroup>
-
-            <p className='text-center text-slate-400'>Card</p>
           </Card>
         </>
       )
