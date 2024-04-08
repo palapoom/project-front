@@ -170,7 +170,7 @@ const Header = (props) => {
       })
 
       if (responseChangeRole.ok) {
-        // getMember()
+        getScrim()
         setIsOpenSuccess(true)
         setIsOpenPostScrim(false)
         console.log('PostScrim successful')
