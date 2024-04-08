@@ -23,6 +23,7 @@ import {
   DatePicker,
 } from '@tremor/react'
 import {
+  RiDeleteBinLine,
   RiCloseLine,
   RiCheckLine,
   RiSaveLine,
@@ -366,6 +367,7 @@ const Header = (props) => {
         body: JSON.stringify(jsonData),
       })
       if (response.ok) {
+        getScrim()
         getScrimOffer()
         setIsOpenSuccess(true)
         console.log('ScrimCancel successful', teamName)
@@ -376,6 +378,63 @@ const Header = (props) => {
     } catch (error) {
       setIsOpenError(true)
       console.error('Error occurred while ScrimCancel in:', error)
+    }
+  }
+
+  const handleScrimOffer = async (scrimId, teamId) => {
+    const jsonData = {
+      scrim_id: parseInt(scrimId),
+      team_id: parseInt(teamId),
+    }
+    console.log('ScrimOffer', jsonData)
+    try {
+      const response = await fetch('https://scrim-api-production.up.railway.app/scrim/offer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+      if (response.ok) {
+        getScrim()
+        getScrimOffer()
+        setIsOpenSuccess(true)
+        console.log('ScrimOffer successful', teamName)
+      } else {
+        setIsOpenError(true)
+        console.error('ScrimOffer failed', response)
+      }
+    } catch (error) {
+      setIsOpenError(true)
+      console.error('Error occurred while ScrimOffer in:', error)
+    }
+  }
+
+  const handleScrimDelete = async (scrimId) => {
+    const jsonData = {
+      scrim_id: parseInt(scrimId),
+    }
+    console.log('ScrimDelete', jsonData)
+    try {
+      const response = await fetch('https://scrim-api-production.up.railway.app/scrim', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+      if (response.ok) {
+        getScrim()
+        getScrimOffer()
+        setIsOpenSuccess(true)
+        console.log('ScrimDelete successful', teamName)
+      } else {
+        setIsOpenError(true)
+        console.error('ScrimDelete failed', response)
+      }
+    } catch (error) {
+      setIsOpenError(true)
+      console.error('Error occurred while ScrimDelete in:', error)
     }
   }
 
@@ -447,6 +506,27 @@ const Header = (props) => {
     const minutes = scrimTime.getUTCMinutes().toString().padStart(2, '0')
     const formattedTime = `${hours}:${minutes}`
 
+    let buttonScrim
+    if (item.flag == 'make offer') {
+      buttonScrim = (
+        <Button variant='secondary' onClick={() => handleScrimOffer(item.scrim_id, item.team_id)}>
+          Make Offer
+        </Button>
+      )
+    } else if (item.flag == 'withdraw offer') {
+      buttonScrim = (
+        <Button color='red' variant='secondary' onClick={() => handleScrimCancel(item.scrim_id, item.team_id)}>
+          Withdraw Offer
+        </Button>
+      )
+    } else if (item.flag == 'delete') {
+      buttonScrim = (
+        <Button variant='light'>
+          <Icon icon={RiDeleteBinLine} onClick={() => handleScrimDelete(item.scrim_id)} variant='simple' tooltip='Delete' color='red' />
+        </Button>
+      )
+    }
+
     return (
       <TableRow key={index}>
         <TableCell>
@@ -461,9 +541,7 @@ const Header = (props) => {
         <TableCell>{item.scrim_map}</TableCell>
         <TableCell>{scrimDate.toLocaleDateString()}</TableCell>
         <TableCell>{formattedTime}</TableCell>
-        <TableCell>
-          <Button onClick={() => handleKick(item.user_id)}>Make Offer</Button>
-        </TableCell>
+        <TableCell>{buttonScrim}</TableCell>
       </TableRow>
     )
   })
