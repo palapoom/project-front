@@ -143,7 +143,7 @@ const Header = (props) => {
 
   const getScrim = async () => {
     try {
-      const responseScrim = await fetch('https://scrim-api-production.up.railway.app/scrim')
+      const responseScrim = await fetch('https://scrim-api-production.up.railway.app/scrim?team_id=' + team_id)
       if (responseScrim.ok) {
         const dataScrim = await responseScrim.json()
         setScrim(dataScrim)
