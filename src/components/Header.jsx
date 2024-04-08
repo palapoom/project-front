@@ -36,59 +36,6 @@ import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
 
 const Header = (props) => {
-  const mock = [
-    {
-      scrim_id: 2,
-      team_id: 1,
-      team_logo: null,
-      team_name: 'Team A',
-      scrim_map: 'Ascent',
-      scrim_date: '2024-04-02T00:00:00Z',
-      scrim_time: '0000-01-01T02:00:00Z',
-      scrim_status: 'unmatched',
-    },
-    {
-      scrim_id: 3,
-      team_id: 1,
-      team_logo: null,
-      team_name: 'Team A',
-      scrim_map: 'Split',
-      scrim_date: '2024-04-02T00:00:00Z',
-      scrim_time: '0000-01-01T02:00:00Z',
-      scrim_status: 'unmatched',
-    },
-    {
-      scrim_id: 7,
-      team_id: 7,
-      team_logo: 'aaff00cc-f74a-4f11-82a3-2cb613b9447c',
-      team_name: 'Team E',
-      scrim_map: 'Lotus',
-      scrim_date: '2024-04-02T00:00:00Z',
-      scrim_time: '0000-01-01T02:00:00Z',
-      scrim_status: 'unmatched',
-    },
-    {
-      scrim_id: 8,
-      team_id: 7,
-      team_logo: 'aaff00cc-f74a-4f11-82a3-2cb613b9447c',
-      team_name: 'Team E',
-      scrim_map: 'Lotus',
-      scrim_date: '2024-04-02T00:00:00Z',
-      scrim_time: '0000-01-01T02:00:00Z',
-      scrim_status: 'unmatched',
-    },
-    {
-      scrim_id: 6,
-      team_id: 7,
-      team_logo: 'aaff00cc-f74a-4f11-82a3-2cb613b9447c',
-      team_name: 'Team E',
-      scrim_map: 'Lotus',
-      scrim_date: '2024-04-02T00:00:00Z',
-      scrim_time: '0000-01-01T02:00:00Z',
-      scrim_status: 'unmatched',
-    },
-  ]
-
   const { nickname, team_id, team_name, role, game_name, invite_code, invite_flag, team_logo } = props
   const [scrimDate, setScrimDate] = useState(undefined)
   const [scrimTime, setScrimTime] = useState('')
@@ -146,7 +93,11 @@ const Header = (props) => {
       const responseScrim = await fetch('https://scrim-api-production.up.railway.app/scrim?team_id=' + team_id)
       if (responseScrim.ok) {
         const dataScrim = await responseScrim.json()
-        setScrim(dataScrim)
+        if (dataScrim.scrims == null) {
+          setScrim([])
+        } else {
+          setScrim(dataScrim.scrims)
+        }
         console.log('Load Scrim successful', dataScrim)
       } else {
         console.error('Load Scrim failed', responseScrim)
