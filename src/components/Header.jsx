@@ -56,6 +56,8 @@ const Header = (props) => {
   const [isOpenSuccess, setIsOpenSuccess] = useState(false)
   const [isOpenError, setIsOpenError] = useState(false)
   const [isOpenPostScrim, setIsOpenPostScrim] = useState(false)
+  const [isOpenTeamBattle, setIsOpenTeamBattle] = useState(false)
+  const [teamBattle, setTeamBattle] = useState([undefined])
   const [member, setMember] = useState([])
   const navigate = useNavigate()
 
@@ -152,6 +154,22 @@ const Header = (props) => {
       }
     } catch (error) {
       console.error('Error occurred while Load Member in:', error)
+    }
+  }
+
+  const handleTeamBattle = async (teamId) => {
+    try {
+      const responseTeamBattle = await fetch('https://scrim-api-production.up.railway.app/team/detail/team-id/' + teamId)
+      if (responseTeamBattle.ok) {
+        const dataTeamBattle = await responseTeamBattle.json()
+        setTeamBattle(dataTeamBattle)
+        setIsOpenTeamBattle(true)
+        console.log('Load TeamBattle successful', dataTeamBattle)
+      } else {
+        console.error('Load TeamBattle failed', responseTeamBattle)
+      }
+    } catch (error) {
+      console.error('Error occurred while Load TeamBattle in:', error)
     }
   }
 
@@ -565,7 +583,7 @@ const Header = (props) => {
     return (
       <TableRow key={index}>
         <TableCell>
-          <div className='flex items-center'>
+          <div className='flex items-center cursor-pointer' onClick={() => handleTeamBattle(item.team_id)}>
             <img
               src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
               className='h-4 w-4 rounded-full me-2'
@@ -914,6 +932,35 @@ const Header = (props) => {
     )
   })
 
+  let memberBattleComponent
+  if (!teamBattle.members) {
+    memberBattleComponent = (
+      <>
+        <p>No member in this team.</p>
+      </>
+    )
+  } else {
+    memberBattleComponent = teamBattle.members.map((item) => {
+      let rolememberBattle = <p>{item.nickname}</p>
+      if (item.role == 'Manager') {
+        rolememberBattle = <p>{item.nickname} (Manager)</p>
+      } else if (item.role == 'Coach') {
+        rolememberBattle = <p>{item.nickname} (Coach)</p>
+      }
+      return (
+        <>
+          <div className='flex items-center'>
+            <img
+              src='https://www.datocms-assets.com/92583/1685100565-valorant-guide-symbol-controllers.svg'
+              className='h-4 w-4 rounded-full me-2'
+            />
+            {rolememberBattle}
+          </div>
+        </>
+      )
+    })
+  }
+
   // props
   const handleSignOut = async () => {
     localStorage.removeItem('email')
@@ -933,6 +980,27 @@ const Header = (props) => {
   }
   return (
     <div className='flex h-screen bg-gray-100'>
+      <Dialog open={isOpenTeamBattle} onClose={(val) => setIsOpenTeamBattle(val)} static={true}>
+        <DialogPanel>
+          <div className='flex items-center'>
+            <img
+              src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${teamBattle.team_logo}`}
+              className='h-20 w-20 rounded-full me-2'
+            />
+            <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
+              {teamBattle.team_name}
+            </h3>
+          </div>
+
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+            <div className='mb-4'>Members</div>
+            {memberBattleComponent}
+          </p>
+          <Button className='mt-8 w-full' onClick={() => setIsOpenTeamBattle(false)}>
+            Got it!
+          </Button>
+        </DialogPanel>
+      </Dialog>
       <Dialog open={isOpenPostScrim} onClose={(val) => setIsOpenPostScrim(val)} static={true}>
         <DialogPanel>
           <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>POST YOUR REQUEST</h3>
