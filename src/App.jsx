@@ -51,6 +51,7 @@ function App() {
         localStorage.setItem('role', data.role)
         localStorage.setItem('team_id', data.team_id)
         localStorage.setItem('team_name', data.team_name)
+        localStorage.setItem('team_logo', data.team_logo)
         localStorage.setItem('user_name', data.user_name)
         console.log('Login successful', data)
         navigate('/home')
