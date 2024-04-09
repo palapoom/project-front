@@ -25,7 +25,6 @@ const HeaderJoinATeam = (props) => {
     const jsonData = {
       invite_code: inviteCode,
       user_id: user_id,
-      // team_logo: "https://seeklogo.com/images/V/valorant-logo-FAB2CA0E55-seeklogo.com.png",
     }
     console.log(jsonData)
     try {
