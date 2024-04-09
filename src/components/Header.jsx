@@ -324,10 +324,10 @@ const Header = (props) => {
     }
   }
 
-  const handleScrimAccept = async (scrimId) => {
+  const handleScrimAccept = async (scrimId, teamId) => {
     const jsonData = {
       scrim_id: parseInt(scrimId),
-      team_id: parseInt(team_id),
+      team_id: parseInt(teamId),
     }
     console.log('ScrimAccept', jsonData)
     try {

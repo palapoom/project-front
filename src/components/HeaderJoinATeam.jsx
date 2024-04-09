@@ -36,11 +36,13 @@ const HeaderJoinATeam = (props) => {
         body: JSON.stringify(jsonData),
       })
       if (response.ok) {
-        // ขอ respone team_id, invite_code, invite_flag
-        // localStorage.setItem('team_name', teamName)
+        const dataJoin = await response.json()
+        localStorage.setItem('team_name', dataJoin.team_name)
+        localStorage.setItem('team_logo', dataJoin.team_logo)
+        localStorage.setItem('invite_flag', dataJoin.invite_flag)
+        localStorage.setItem('invite_code', dataJoin.invite_code)
         setIsOpenSuccess(true)
         console.log('Join successful')
-        // navigate('/home')
       } else {
         setIsOpenError(true)
         console.error('Join failed', response)
