@@ -37,6 +37,7 @@ const HeaderJoinATeam = (props) => {
       })
       if (response.ok) {
         const dataJoin = await response.json()
+        localStorage.setItem('team_id', dataJoin.team_id)
         localStorage.setItem('team_name', dataJoin.team_name)
         localStorage.setItem('team_logo', dataJoin.team_logo)
         localStorage.setItem('invite_flag', dataJoin.invite_flag)
