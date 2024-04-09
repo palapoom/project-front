@@ -8,9 +8,9 @@ import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
 
 const HeaderCreateATeam = (props) => {
-  const { user_id, nickname, team_id, team_name, role, game_name, invite_code, invite_flag } = props
+  const { user_id, nickname, team_id, team_name, role, game_id, game_name, invite_code, invite_flag } = props
   const [teamName, setTeamName] = useState('')
-  const [gameId, setGameId] = useState('1')
+  const [gameId, setGameId] = useState(game_id)
   const [media, setMedia] = useState('')
   const [isOpenPleaseFill, setIsOpenPleaseFill] = useState(false)
   const [isOpenSuccess, setIsOpenSuccess] = useState(false)
@@ -97,7 +97,7 @@ const HeaderCreateATeam = (props) => {
               <label htmlFor='gameId' className='block text-sm font-medium text-gray-700 mb-2'>
                 Game
               </label>
-              <Select defaultValue={gameId} value={gameId} onValueChange={(e) => setGameId(e)}>
+              <Select disabled defaultValue={gameId} value={gameId} onValueChange={(e) => setGameId(e)}>
                 <SelectItem value='1'>
                   <div className='inline-flex items-center'>
                     <img src={valorant} className='h-4 w-4 rounded-full me-2' />
