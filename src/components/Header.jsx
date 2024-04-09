@@ -941,7 +941,7 @@ const Header = (props) => {
               <label htmlFor='scrimDate' className='block text-sm font-medium text-gray-700 mb-2'>
                 Date
               </label>
-              <DatePicker className='mx-auto max-w-sm' value={scrimDate} onValueChange={(e) => setScrimDate(e)} />
+              <DatePicker minDate={new Date()} className='mx-auto max-w-sm' value={scrimDate} onValueChange={(e) => setScrimDate(e)} />
             </div>
             <div className='mb-4'>
               <label htmlFor='scrimTime' className='block text-sm font-medium text-gray-700 mb-2'>
