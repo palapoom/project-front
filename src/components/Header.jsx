@@ -39,7 +39,8 @@ import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
 
 const Header = (props) => {
-  const { nickname, team_id, team_name, role, game_name, invite_code, invite_flag, team_logo } = props
+  const { nickname, team_id, team_name, role, game_id, game_name, invite_code, invite_flag, team_logo } = props
+  const [gameMap, setGameMap] = useState([])
   const [scrimDate, setScrimDate] = useState(undefined)
   const [scrimTime, setScrimTime] = useState('')
   const [scrimMap, setScrimMap] = useState()
@@ -59,6 +60,7 @@ const Header = (props) => {
   const navigate = useNavigate()
 
   useEffect(() => {
+    getGameMap()
     getMember()
     getScrim()
     getScrimOffer()
@@ -69,6 +71,25 @@ const Header = (props) => {
     'https://pkeejyrcevjrgrgljqfw.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZWVqeXJjZXZqcmdyZ2xqcWZ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTgwMDA2MCwiZXhwIjoyMDI3Mzc2MDYwfQ.HcJ80sv2Xs7Q07R_qAQg4eS-1zOsXG4au8EMFMJpt3w'
   )
+
+  const getGameMap = async () => {
+    try {
+      const responseGameMap = await fetch(`https://scrim-api-production.up.railway.app/game/game-id/${game_id}/map`)
+      if (responseGameMap.ok) {
+        const dataGameMap = await responseGameMap.json()
+        if (dataGameMap.map_name) {
+          setGameMap(dataGameMap.map_name)
+        } else {
+          setGameMap([])
+        }
+        console.log('Load GameMap successful', dataGameMap)
+      } else {
+        console.error('Load GameMap failed', responseGameMap)
+      }
+    } catch (error) {
+      console.error('Error occurred while Load GameMap in:', error)
+    }
+  }
 
   const getScrimOffer = async () => {
     try {
@@ -890,42 +911,54 @@ const Header = (props) => {
     }
   }
 
-  let gameComponent
-  if (game_name == 'Valorant') {
-    gameComponent = (
-      <div className='mb-4'>
-        <label htmlFor='scrimMap' className='block text-sm font-medium text-gray-700 mb-2'>
-          Map
+  const time = [
+    '00:00',
+    '01:00',
+    '02:00',
+    '03:00',
+    '04:00',
+    '05:00',
+    '06:00',
+    '07:00',
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00',
+    '22:00',
+    '23:00',
+  ]
+
+  let gameTimeComponent = time.map((item) => {
+    return (
+      <>
+        <input className='mr-1' type='radio' id={item} name='time' value={item} onChange={(e) => setScrimTime(e.target.value)} />
+        <label className='mr-1' htmlFor={item}>
+          {item}
         </label>
-        <input type='radio' name='game' value='Haven' onChange={(e) => setScrimMap(e.target.value)} /> Haven
-        <input type='radio' name='game' value='Bind' onChange={(e) => setScrimMap(e.target.value)} /> Bind
-        <input type='radio' name='game' value='Split' onChange={(e) => setScrimMap(e.target.value)} /> Split
-        <input type='radio' name='game' value='Ascent' onChange={(e) => setScrimMap(e.target.value)} /> Ascent
-        <input type='radio' name='game' value='Icebox' onChange={(e) => setScrimMap(e.target.value)} /> Icebox
-        <input type='radio' name='game' value='Breeze' onChange={(e) => setScrimMap(e.target.value)} /> Breeze
-        <input type='radio' name='game' value='Fracture' onChange={(e) => setScrimMap(e.target.value)} /> Fracture
-        <input type='radio' name='game' value='Lotus' onChange={(e) => setScrimMap(e.target.value)} /> Lotus
-        <input type='radio' name='game' value='Sunset' onChange={(e) => setScrimMap(e.target.value)} /> Sunset
-      </div>
+      </>
     )
-  } else if (game_name == 'CSGO2') {
-    gameComponent = (
-      <div className='mb-4'>
-        <label htmlFor='scrimMap' className='block text-sm font-medium text-gray-700 mb-2'>
-          Map
+  })
+
+  let gameMapComponent = gameMap.map((item) => {
+    return (
+      <>
+        <input className='mr-1' type='radio' id={item} name='game' value={item} onChange={(e) => setScrimMap(e.target.value)} />
+        <label className='mr-1' htmlFor={item}>
+          {item}
         </label>
-        <input type='radio' name='game' value='Dust 2' onChange={(e) => setScrimMap(e.target.value)} /> Dust 2
-        <input type='radio' name='game' value='Inferno' onChange={(e) => setScrimMap(e.target.value)} /> Inferno
-        <input type='radio' name='game' value='Mirage' onChange={(e) => setScrimMap(e.target.value)} /> Mirage
-        <input type='radio' name='game' value='Nuke' onChange={(e) => setScrimMap(e.target.value)} /> Nuke
-        <input type='radio' name='game' value='Overpass' onChange={(e) => setScrimMap(e.target.value)} /> Overpass
-        <input type='radio' name='game' value='Office' onChange={(e) => setScrimMap(e.target.value)} /> Office
-        <input type='radio' name='game' value='Vertigo' onChange={(e) => setScrimMap(e.target.value)} /> Vertigo
-        <input type='radio' name='game' value='Ancient' onChange={(e) => setScrimMap(e.target.value)} /> Ancient
-        <input type='radio' name='game' value='Anubis' onChange={(e) => setScrimMap(e.target.value)} /> Anubis
-      </div>
+      </>
     )
-  }
+  })
 
   // props
   const handleSignOut = async () => {
@@ -960,32 +993,14 @@ const Header = (props) => {
               <label htmlFor='scrimTime' className='block text-sm font-medium text-gray-700 mb-2'>
                 Time
               </label>
-              <input type='radio' name='time' value='00:00' onChange={(e) => setScrimTime(e.target.value)} /> 00:00
-              <input type='radio' name='time' value='01:00' onChange={(e) => setScrimTime(e.target.value)} /> 01:00
-              <input type='radio' name='time' value='02:00' onChange={(e) => setScrimTime(e.target.value)} /> 02:00
-              <input type='radio' name='time' value='03:00' onChange={(e) => setScrimTime(e.target.value)} /> 03:00
-              <input type='radio' name='time' value='04:00' onChange={(e) => setScrimTime(e.target.value)} /> 04:00
-              <input type='radio' name='time' value='05:00' onChange={(e) => setScrimTime(e.target.value)} /> 05:00
-              <input type='radio' name='time' value='06:00' onChange={(e) => setScrimTime(e.target.value)} /> 06:00
-              <input type='radio' name='time' value='07:00' onChange={(e) => setScrimTime(e.target.value)} /> 07:00
-              <input type='radio' name='time' value='08:00' onChange={(e) => setScrimTime(e.target.value)} /> 08:00
-              <input type='radio' name='time' value='09:00' onChange={(e) => setScrimTime(e.target.value)} /> 09:00
-              <input type='radio' name='time' value='10:00' onChange={(e) => setScrimTime(e.target.value)} /> 10:00
-              <input type='radio' name='time' value='11:00' onChange={(e) => setScrimTime(e.target.value)} /> 11:00
-              <input type='radio' name='time' value='12:00' onChange={(e) => setScrimTime(e.target.value)} /> 12:00
-              <input type='radio' name='time' value='13:00' onChange={(e) => setScrimTime(e.target.value)} /> 13:00
-              <input type='radio' name='time' value='14:00' onChange={(e) => setScrimTime(e.target.value)} /> 14:00
-              <input type='radio' name='time' value='15:00' onChange={(e) => setScrimTime(e.target.value)} /> 15:00
-              <input type='radio' name='time' value='16:00' onChange={(e) => setScrimTime(e.target.value)} /> 16:00
-              <input type='radio' name='time' value='17:00' onChange={(e) => setScrimTime(e.target.value)} /> 17:00
-              <input type='radio' name='time' value='18:00' onChange={(e) => setScrimTime(e.target.value)} /> 18:00
-              <input type='radio' name='time' value='19:00' onChange={(e) => setScrimTime(e.target.value)} /> 19:00
-              <input type='radio' name='time' value='20:00' onChange={(e) => setScrimTime(e.target.value)} /> 20:00
-              <input type='radio' name='time' value='21:00' onChange={(e) => setScrimTime(e.target.value)} /> 21:00
-              <input type='radio' name='time' value='22:00' onChange={(e) => setScrimTime(e.target.value)} /> 22:00
-              <input type='radio' name='time' value='23:00' onChange={(e) => setScrimTime(e.target.value)} /> 23:00
+              {gameTimeComponent}
             </div>
-            {gameComponent}
+            <div className='mb-4'>
+              <label htmlFor='scrimMap' className='block text-sm font-medium text-gray-700 mb-2'>
+                Map
+              </label>
+              {gameMapComponent}
+            </div>
           </p>
           <Button className='mt-8 w-full' onClick={() => handlePostScrim()}>
             Save your request

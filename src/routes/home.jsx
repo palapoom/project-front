@@ -41,6 +41,7 @@ function Home() {
         team_id={localStorage.getItem('team_id')}
         team_name={localStorage.getItem('team_name')}
         role={localStorage.getItem('role')}
+        game_id={localStorage.getItem('game_id')}
         game_name={localStorage.getItem('game_name')}
         invite_code={localStorage.getItem('invite_code')}
         invite_flag={localStorage.getItem('invite_flag')}
