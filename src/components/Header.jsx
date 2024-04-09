@@ -439,23 +439,43 @@ const Header = (props) => {
   }
 
   let memberComponent = member.map((item, index) => {
-    let changeRoleDropdown = (
-      <Select defaultValue={item.role} value={item.role} onValueChange={(e) => handleChangeRole(item.user_id, e)}>
-        <SelectItem value='Manager'>Manager</SelectItem>
-        <SelectItem value='Player'>Player</SelectItem>
-      </Select>
-    )
+    let changeRoleDropdown
+    if (item.role == 'Manager') {
+      changeRoleDropdown = (
+        <Select disabled defaultValue={item.role} value={item.role} onValueChange={(e) => handleChangeRole(item.user_id, e)}>
+          <SelectItem value='Manager'>Manager</SelectItem>
+        </Select>
+      )
+    } else {
+      changeRoleDropdown = (
+        <Select defaultValue={item.role} value={item.role} onValueChange={(e) => handleChangeRole(item.user_id, e)}>
+          <SelectItem value='Player'>Player</SelectItem>
+          <SelectItem value='Coach'>Coach</SelectItem>
+        </Select>
+      )
+    }
+
+    let kickButton
+    if (item.role == 'Manager') {
+      kickButton = (
+        <Button disabled variant='light'>
+          <Icon icon={RiCloseCircleLine} onClick={() => handleKick(item.user_id)} variant='simple' tooltip='Kick' color='red' />
+        </Button>
+      )
+    } else {
+      kickButton = (
+        <Button variant='light'>
+          <Icon icon={RiCloseCircleLine} onClick={() => handleKick(item.user_id)} variant='simple' tooltip='Kick' color='red' />
+        </Button>
+      )
+    }
 
     return (
       <TableRow key={index}>
         <TableCell>{item.nickname}</TableCell>
         <TableCell>{item.role}</TableCell>
         <TableCell>{changeRoleDropdown}</TableCell>
-        <TableCell>
-          <Button variant='light'>
-            <Icon icon={RiCloseCircleLine} onClick={() => handleKick(item.user_id)} variant='simple' tooltip='Kick' color='red' />
-          </Button>
-        </TableCell>
+        <TableCell>{kickButton}</TableCell>
       </TableRow>
     )
   })
