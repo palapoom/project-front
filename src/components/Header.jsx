@@ -581,6 +581,25 @@ const Header = (props) => {
     )
   })
 
+  let gameMapSearchComponent = gameMap.map((item) => {
+    return (
+      <>
+        <input
+          className='mr-1'
+          type='checkbox'
+          id={item}
+          name='searchMap'
+          value={item}
+          checked={selectedMaps.includes(item)}
+          onChange={handleMapChange}
+        />
+        <label className='mr-1' htmlFor={item}>
+          {item}
+        </label>
+      </>
+    )
+  })
+
   let teamComponent
   if (team_id == 'null') {
     teamComponent = (
@@ -786,96 +805,31 @@ const Header = (props) => {
                       Maps
                     </label>
                     <input
+                      className='mr-1'
                       type='radio'
+                      id='all'
                       name='searchMapType'
                       value='all'
                       checked={selectedMapType === 'all'}
                       onChange={(e) => setSelectedMapType(e.target.value)}
                     />
-                    All Maps
+                    <label className='mr-1' htmlFor='all'>
+                      All Maps
+                    </label>
                     <input
+                      className='mr-1'
                       type='radio'
+                      id='some'
                       name='searchMapType'
                       value='some'
                       checked={selectedMapType === 'some'}
                       onChange={(e) => setSelectedMapType(e.target.value)}
                     />
-                    Only Some
+                    <label className='mr-1' htmlFor='some'>
+                      Only Some
+                    </label>
                   </div>
-                  <div className='mb-4'>
-                    <input
-                      type='checkbox'
-                      name='searchMap'
-                      value='Haven'
-                      checked={selectedMaps.includes('Haven')}
-                      onChange={handleMapChange}
-                    />
-                    Haven
-                    <input
-                      type='checkbox'
-                      name='searchMap'
-                      value='Bind'
-                      checked={selectedMaps.includes('Bind')}
-                      onChange={handleMapChange}
-                    />
-                    Bind
-                    <input
-                      type='checkbox'
-                      name='searchMap'
-                      value='Split'
-                      checked={selectedMaps.includes('Split')}
-                      onChange={handleMapChange}
-                    />
-                    Split
-                    <input
-                      type='checkbox'
-                      name='searchMap'
-                      value='Ascent'
-                      checked={selectedMaps.includes('Ascent')}
-                      onChange={handleMapChange}
-                    />
-                    Ascent
-                    <input
-                      type='checkbox'
-                      name='searchMap'
-                      value='Icebox'
-                      checked={selectedMaps.includes('Icebox')}
-                      onChange={handleMapChange}
-                    />
-                    Icebox
-                    <input
-                      type='checkbox'
-                      name='searchMap'
-                      value='Breeze'
-                      checked={selectedMaps.includes('Breeze')}
-                      onChange={handleMapChange}
-                    />
-                    Breeze
-                    <input
-                      type='checkbox'
-                      name='searchMap'
-                      value='Fracture'
-                      checked={selectedMaps.includes('Fracture')}
-                      onChange={handleMapChange}
-                    />
-                    Fracture
-                    <input
-                      type='checkbox'
-                      name='searchMap'
-                      value='Lotus'
-                      checked={selectedMaps.includes('Lotus')}
-                      onChange={handleMapChange}
-                    />
-                    Lotus
-                    <input
-                      type='checkbox'
-                      name='searchMap'
-                      value='Sunset'
-                      checked={selectedMaps.includes('Sunset')}
-                      onChange={handleMapChange}
-                    />
-                    Sunset
-                  </div>
+                  <div className='mb-4'>{gameMapSearchComponent}</div>
                   <div className='text-center'>
                     <Button icon={RiAddLine} color='purple' onClick={() => setIsOpenPostScrim(true)}>
                       POST YOUR REQUEST
