@@ -951,7 +951,7 @@ const Header = (props) => {
         <>
           <div className='flex items-center'>
             <img
-              src='https://www.datocms-assets.com/92583/1685100565-valorant-guide-symbol-controllers.svg'
+              src='https://png.pngtree.com/png-vector/20191003/ourlarge/pngtree-cyber-man-icon-isolated-on-abstract-background-png-image_1779333.jpg'
               className='h-4 w-4 rounded-full me-2'
             />
             {rolememberBattle}
