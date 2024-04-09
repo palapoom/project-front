@@ -352,10 +352,10 @@ const Header = (props) => {
     }
   }
 
-  const handleScrimCancel = async (scrimId, teamId) => {
+  const handleScrimCancel = async (scrimId) => {
     const jsonData = {
       scrim_id: parseInt(scrimId),
-      team_id: parseInt(teamId),
+      team_id: parseInt(team_id),
     }
     console.log('ScrimCancel', jsonData)
     try {
@@ -381,10 +381,10 @@ const Header = (props) => {
     }
   }
 
-  const handleScrimOffer = async (scrimId, teamId) => {
+  const handleScrimOffer = async (scrimId) => {
     const jsonData = {
       scrim_id: parseInt(scrimId),
-      team_id: parseInt(teamId),
+      team_id: parseInt(team_id),
     }
     console.log('ScrimOffer', jsonData)
     try {
@@ -486,13 +486,7 @@ const Header = (props) => {
         </TableCell>
         <TableCell>
           <Button variant='light'>
-            <Icon
-              icon={RiCloseCircleLine}
-              onClick={() => handleScrimCancel(item.scrim_id, item.team_id)}
-              variant='simple'
-              tooltip='Cancel'
-              color='red'
-            />
+            <Icon icon={RiCloseCircleLine} onClick={() => handleScrimCancel(item.scrim_id)} variant='simple' tooltip='Cancel' color='red' />
           </Button>
         </TableCell>
       </TableRow>
@@ -509,7 +503,7 @@ const Header = (props) => {
     let buttonScrim
     if (item.flag == 'make offer') {
       buttonScrim = (
-        <Button variant='secondary' onClick={() => handleScrimOffer(item.scrim_id, item.team_id)}>
+        <Button variant='secondary' onClick={() => handleScrimOffer(item.scrim_id)}>
           Make Offer
         </Button>
       )
