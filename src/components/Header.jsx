@@ -745,10 +745,6 @@ const Header = (props) => {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
-                    magna aliquyam erat.
-                  </p>
                   <div className='grid grid-flow-col justify-stretch mt-6'>
                     <div className='items-center'>
                       <label className='block text-sm font-medium text-gray-700 mb-2'>Team Name</label>
