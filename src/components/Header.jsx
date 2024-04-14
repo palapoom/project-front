@@ -59,6 +59,7 @@ const Header = (props) => {
   const [isOpenTeamBattle, setIsOpenTeamBattle] = useState(false)
   const [teamBattle, setTeamBattle] = useState([undefined])
   const [member, setMember] = useState([])
+  const [matches, setMatches] = useState([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -66,6 +67,7 @@ const Header = (props) => {
     getMember()
     getScrim()
     getScrimOffer()
+    getMatches()
   }, [])
 
   // const supabase = createClient(process.env.SUPABASE_URL, process.env.SERVICE_ROLE_KEY)
@@ -73,6 +75,25 @@ const Header = (props) => {
     'https://pkeejyrcevjrgrgljqfw.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZWVqeXJjZXZqcmdyZ2xqcWZ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTgwMDA2MCwiZXhwIjoyMDI3Mzc2MDYwfQ.HcJ80sv2Xs7Q07R_qAQg4eS-1zOsXG4au8EMFMJpt3w'
   )
+
+  const getMatches = async () => {
+    try {
+      const responseMatches = await fetch(`https://scrim-api-production.up.railway.app/scrim/match/team-id/${team_id}`)
+      if (responseMatches.ok) {
+        const dataMatches = await responseMatches.json()
+        if (dataMatches.scrims) {
+          setMatches(dataMatches.scrims)
+        } else {
+          setMatches([])
+        }
+        console.log('Load Matches successful', dataMatches)
+      } else {
+        console.error('Load Matches failed', responseMatches)
+      }
+    } catch (error) {
+      console.error('Error occurred while Load Matches in:', error)
+    }
+  }
 
   const getGameMap = async () => {
     try {
@@ -618,6 +639,30 @@ const Header = (props) => {
     )
   })
 
+  let matchesComponent = matches.map((item, index) => {
+    const matcheDate = new Date(item.scrim_date)
+    const matcheTime = new Date(item.scrim_time)
+    const hours = matcheTime.getUTCHours().toString().padStart(2, '0')
+    const minutes = matcheTime.getUTCMinutes().toString().padStart(2, '0')
+    const formattedTime = `${hours}:${minutes}`
+    return (
+      <TableRow key={index}>
+        <TableCell>{matcheDate.toLocaleDateString()}</TableCell>
+        <TableCell>
+        <div className='flex items-center cursor-pointer' onClick={() => handleTeamBattle(item.team_id)}>
+            <img
+              src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
+              className='h-4 w-4 rounded-full me-2'
+            />
+            {item.team_name}
+          </div>
+        </TableCell>
+        <TableCell>{item.scrim_map}</TableCell>
+        <TableCell>{formattedTime}</TableCell>
+      </TableRow>
+    )
+  })
+
   let teamComponent
   if (team_id == 'null') {
     teamComponent = (
@@ -654,6 +699,7 @@ const Header = (props) => {
                 <Tab>Members</Tab>
                 <Tab>Manage Scrim</Tab>
                 <Tab>Search</Tab>
+                <Tab>Matches</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
@@ -867,6 +913,20 @@ const Header = (props) => {
                       <TableBody>{scrimComponent}</TableBody>
                     </Table>
                   </div>
+                </TabPanel>
+                <TabPanel>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Matches Detail</p>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeaderCell>Date</TableHeaderCell>
+                        <TableHeaderCell>Team</TableHeaderCell>
+                        <TableHeaderCell>Map</TableHeaderCell>
+                        <TableHeaderCell>Time</TableHeaderCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{matchesComponent}</TableBody>
+                  </Table>
                 </TabPanel>
               </TabPanels>
             </TabGroup>
