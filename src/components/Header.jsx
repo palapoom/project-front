@@ -725,7 +725,6 @@ const Header = (props) => {
               </Button>
             </div>
           </div>
-          <p className='text-center text-slate-400'>Card</p>
         </Card>
       </>
     )
