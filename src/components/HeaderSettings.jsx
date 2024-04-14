@@ -167,7 +167,6 @@ const HeaderSettings = (props) => {
             </div>
           </div>
         </div>
-        <p className='text-center text-slate-400'>Card</p>
       </Card>
     </>
   )
