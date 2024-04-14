@@ -1136,7 +1136,7 @@ const Header = (props) => {
     return (
       <>
         <input className='mr-1' type='radio' id={item} name='time' value={item} onChange={(e) => setScrimTime(e.target.value)} />
-        <label className='mr-1' htmlFor={item}>
+        <label className='mr-6' htmlFor={item}>
           {item}
         </label>
       </>
