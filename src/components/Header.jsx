@@ -1165,7 +1165,11 @@ const Header = (props) => {
     memberBattleComponent = teamBattle.members.map((item) => {
       let rolememberBattle = <p>{item.nickname}</p>
       if (item.role == 'Manager') {
-        rolememberBattle = <p>{item.nickname} (Manager)</p>
+        rolememberBattle = (
+          <p>
+            {item.nickname} (Manager) Phone Number : {item.phone_number}
+          </p>
+        )
       } else if (item.role == 'Coach') {
         rolememberBattle = <p>{item.nickname} (Coach)</p>
       }
