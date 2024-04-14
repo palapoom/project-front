@@ -649,7 +649,7 @@ const Header = (props) => {
       <TableRow key={index}>
         <TableCell>{matcheDate.toLocaleDateString()}</TableCell>
         <TableCell>
-        <div className='flex items-center cursor-pointer' onClick={() => handleTeamBattle(item.team_id)}>
+          <div className='flex items-center cursor-pointer' onClick={() => handleTeamBattle(item.team_id)}>
             <img
               src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
               className='h-4 w-4 rounded-full me-2'
@@ -933,11 +933,138 @@ const Header = (props) => {
           </Card>
         </>
       )
+    } else if (role == 'Coach') {
+      teamComponent = (
+        <>
+          <Card className='mx-auto'>
+            <h1 className='text-2xl font-bold'>Team</h1>
+            <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
+            <TabGroup>
+              <TabList className='mt-4'>
+                <Tab>Manage Scrim</Tab>
+                <Tab>Search</Tab>
+                <Tab>Matches</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+                    Manage Scrim Detail
+                  </p>
+                  <div className=''>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableHeaderCell>Team</TableHeaderCell>
+                          <TableHeaderCell>Map</TableHeaderCell>
+                          <TableHeaderCell>Date</TableHeaderCell>
+                          <TableHeaderCell>Time</TableHeaderCell>
+                          <TableHeaderCell>Action</TableHeaderCell>
+                          <TableHeaderCell>Cancel</TableHeaderCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>{scrimOfferComponent}</TableBody>
+                    </Table>
+                  </div>
+                </TabPanel>
+                <TabPanel>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Search Detail</p>
+                  <div className='mb-4'>
+                    <label htmlFor='searchMapType' className='block text-sm font-medium text-gray-700 mb-2'>
+                      Maps
+                    </label>
+                    <input
+                      className='mr-1'
+                      type='radio'
+                      id='all'
+                      name='searchMapType'
+                      value='all'
+                      checked={selectedMapType === 'all'}
+                      onChange={(e) => setSelectedMapType(e.target.value)}
+                    />
+                    <label className='mr-1' htmlFor='all'>
+                      All Maps
+                    </label>
+                    <input
+                      className='mr-1'
+                      type='radio'
+                      id='some'
+                      name='searchMapType'
+                      value='some'
+                      checked={selectedMapType === 'some'}
+                      onChange={(e) => setSelectedMapType(e.target.value)}
+                    />
+                    <label className='mr-1' htmlFor='some'>
+                      Only Some
+                    </label>
+                  </div>
+                  <div className='mb-4'>{gameMapSearchComponent}</div>
+                  <div className='text-center'>
+                    <Button icon={RiAddLine} color='purple' onClick={() => setIsOpenPostScrim(true)}>
+                      POST YOUR REQUEST
+                    </Button>
+                  </div>
+                  <div className='text-center'>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableHeaderCell>Team</TableHeaderCell>
+                          <TableHeaderCell>Map</TableHeaderCell>
+                          <TableHeaderCell>Date</TableHeaderCell>
+                          <TableHeaderCell>Time</TableHeaderCell>
+                          <TableHeaderCell>Action</TableHeaderCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>{scrimComponent}</TableBody>
+                    </Table>
+                  </div>
+                </TabPanel>
+                <TabPanel>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Matches Detail</p>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeaderCell>Date</TableHeaderCell>
+                        <TableHeaderCell>Team</TableHeaderCell>
+                        <TableHeaderCell>Map</TableHeaderCell>
+                        <TableHeaderCell>Time</TableHeaderCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{matchesComponent}</TableBody>
+                  </Table>
+                </TabPanel>
+              </TabPanels>
+            </TabGroup>
+          </Card>
+        </>
+      )
     } else {
       teamComponent = (
         <>
-          <h1 className='text-2xl font-bold'>Welcome to my dashboard!</h1>
-          <p className='mt-2 text-gray-600'>This is Player.</p>
+          <Card className='mx-auto'>
+            <h1 className='text-2xl font-bold'>Team</h1>
+            <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
+            <TabGroup>
+              <TabList className='mt-4'>
+                <Tab>Matches</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Matches Detail</p>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeaderCell>Date</TableHeaderCell>
+                        <TableHeaderCell>Team</TableHeaderCell>
+                        <TableHeaderCell>Map</TableHeaderCell>
+                        <TableHeaderCell>Time</TableHeaderCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{matchesComponent}</TableBody>
+                  </Table>
+                </TabPanel>
+              </TabPanels>
+            </TabGroup>
+          </Card>
         </>
       )
     }
