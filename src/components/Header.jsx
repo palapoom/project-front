@@ -713,7 +713,6 @@ const Header = (props) => {
       <>
         <Card className='mx-auto'>
           <h1 className='text-2xl font-bold'>Scrim Search</h1>
-          <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
           <div className='grid grid-flow-col justify-stretch mt-6'>
             <div className='text-center'>
               <Button icon={RiAddLine} color='purple' onClick={() => handleCreateATeam()}>
@@ -736,7 +735,6 @@ const Header = (props) => {
         <>
           <Card className='mx-auto'>
             <h1 className='text-2xl font-bold'>Team</h1>
-            <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
             <TabGroup>
               <TabList className='mt-4'>
                 <Tab>Team Settings</Tab>
@@ -982,7 +980,6 @@ const Header = (props) => {
         <>
           <Card className='mx-auto'>
             <h1 className='text-2xl font-bold'>Team</h1>
-            <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
             <TabGroup>
               <TabList className='mt-4'>
                 <Tab>Manage Scrim</Tab>
@@ -1086,7 +1083,6 @@ const Header = (props) => {
         <>
           <Card className='mx-auto'>
             <h1 className='text-2xl font-bold'>Team</h1>
-            <p className='mt-2 text-gray-600'>This is an example dashboard using Tailwind CSS.</p>
             <TabGroup>
               <TabList className='mt-4'>
                 <Tab>Matches</Tab>
