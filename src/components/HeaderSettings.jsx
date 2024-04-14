@@ -14,6 +14,7 @@ const HeaderSettings = (props) => {
   const [isOpenSuccess, setIsOpenSuccess] = useState(false)
   const [isOpenError, setIsOpenError] = useState(false)
   const [isOpenPasswordNotMatch, setIsOpenPasswordNotMatch] = useState(false)
+  const [isOpenPhoneNumberInvalid, setIsOpenPhoneNumberInvalid] = useState(false)
   const navigate = useNavigate()
 
   const [newPassword, setNewPassword] = useState('')
@@ -27,6 +28,16 @@ const HeaderSettings = (props) => {
   }
 
   const handleSave = async () => {
+    const pattern = /^[0][0-9]{9}$/
+
+    if (pattern.test(phoneNumberSetting)) {
+      console.log('Phone number is valid')
+    } else {
+      setIsOpenPhoneNumberInvalid(true)
+      console.log('Phone number is not valid')
+      return
+    }
+
     let jsonData = {
       nickname: nicknameSetting,
       phone_number: phoneNumberSetting,
@@ -35,6 +46,7 @@ const HeaderSettings = (props) => {
     if (newPassword || repeatPassword) {
       if (newPassword !== repeatPassword) {
         console.error('Password not match')
+        handleClear()
         setIsOpenPasswordNotMatch(true)
         return
       } else {
@@ -54,7 +66,6 @@ const HeaderSettings = (props) => {
       if (response.ok) {
         localStorage.setItem('nickname', nicknameSetting)
         localStorage.setItem('phone_number', phoneNumberSetting)
-
         handleClear()
         setIsOpenSuccess(true)
         console.log('Save successful')
@@ -189,6 +200,15 @@ const HeaderSettings = (props) => {
   }
   return (
     <div className='flex h-screen bg-gray-100'>
+      <Dialog open={isOpenPhoneNumberInvalid} onClose={(val) => setIsOpenPhoneNumberInvalid(val)} static={true}>
+        <DialogPanel>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Phone number is not valid.</h3>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Phone number is not valid.</p>
+          <Button className='mt-8 w-full' onClick={() => setIsOpenPhoneNumberInvalid(false)}>
+            Got it!
+          </Button>
+        </DialogPanel>
+      </Dialog>
       <Dialog open={isOpenPasswordNotMatch} onClose={(val) => setIsOpenPasswordNotMatch(val)} static={true}>
         <DialogPanel>
           <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Password not match.</h3>
