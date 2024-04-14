@@ -178,7 +178,7 @@ const HeaderCreateATeam = (props) => {
       </Dialog>
       <div className='hidden md:flex flex-col w-64 bg-gray-800'>
         <div className='flex items-center justify-center h-16 bg-gray-900'>
-          <span className='text-white font-bold uppercase'>Scrim</span>
+          <span className='text-white font-bold uppercase'>WeScrim</span>
         </div>
         <div className='flex flex-col flex-1 overflow-y-auto'>
           <nav className='flex-1 px-2 py-4 bg-gray-800'>
@@ -219,7 +219,7 @@ const HeaderCreateATeam = (props) => {
         <div className='p-4'>
           {joinATeamComponent}
           <Divider>
-            <Icon icon={RiShiningFill} variant='simple' tooltip='Scrim' size='xs' color='gray-400' />
+            <Icon icon={RiShiningFill} variant='simple' tooltip='WeScrim' size='xs' color='gray-400' />
           </Divider>
         </div>
       </div>

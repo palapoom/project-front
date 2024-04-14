@@ -102,7 +102,7 @@ function Register() {
           </DialogPanel>
         </Dialog>
         <div className='bg-white bg-gray-900 shadow-md rounded-lg px-8 py-6 max-w-md'>
-          <h1 className='text-2xl font-bold text-center mb-4 text-gray-950'>Register to Scrim!</h1>
+          <h1 className='text-2xl font-bold text-center mb-4 text-gray-950'>Register to WeScrim!</h1>
           <form onSubmit={handleSubmit}>
             <div className='mb-4'>
               <label htmlFor='nickname' className='block text-sm font-medium text-gray-700 mb-2'>
