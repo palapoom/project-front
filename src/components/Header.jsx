@@ -69,6 +69,15 @@ const Header = (props) => {
     </div>
   ))
   const navigate = useNavigate()
+  const [isSave, setIsSave] = useState(true)
+
+  useEffect(() => {
+    if (teamName != team_name || media != team_logo) {
+      setIsSave(false)
+    } else {
+      setIsSave(true)
+    }
+  }, [media, teamName, team_logo, team_name])
 
   useEffect(() => {
     getGameMap()
@@ -772,7 +781,7 @@ const Header = (props) => {
                   <div className='grid grid-flow-col justify-stretch mt-6'>
                     <div className='text-center'></div>
                     <div className='text-end'>
-                      <Button icon={RiSaveLine} color='purple' onClick={() => handleUpdate()}>
+                      <Button disabled={isSave} icon={RiSaveLine} color='purple' onClick={() => handleUpdate()}>
                         SAVE TEAM INFO
                       </Button>
                     </div>
