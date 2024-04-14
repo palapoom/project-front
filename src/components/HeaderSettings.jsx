@@ -4,93 +4,114 @@ import { RiUserSettingsLine, RiLogoutBoxRLine, RiGroupLine, RiShiningFill, RiArr
 import { Link, useNavigate } from 'react-router-dom'
 import valorant from '../assets/valorant.svg'
 import counterstrike2 from '../assets/counterstrike2.svg'
-import { createClient } from '@supabase/supabase-js'
-import { v4 as uuidv4 } from 'uuid'
 
-const HeaderCreateATeam = (props) => {
-  const { user_id, nickname, team_id, team_name, role, game_id, game_name, invite_code, invite_flag } = props
-  const [teamName, setTeamName] = useState('')
+const HeaderSettings = (props) => {
+  const { user_id, nickname, email, phoneNumber, team_id, team_name, role, game_id, game_name, invite_code, invite_flag } = props
+  const [nicknameSetting, setNicknameSetting] = useState(nickname)
+  const [phoneNumberSetting, setPhoneNumberSetting] = useState(phoneNumber)
   const [gameId, setGameId] = useState(game_id)
-  const [media, setMedia] = useState('')
   const [isOpenPleaseFill, setIsOpenPleaseFill] = useState(false)
   const [isOpenSuccess, setIsOpenSuccess] = useState(false)
   const [isOpenError, setIsOpenError] = useState(false)
+  const [isOpenPasswordNotMatch, setIsOpenPasswordNotMatch] = useState(false)
   const navigate = useNavigate()
 
-  const supabase = createClient(
-    'https://pkeejyrcevjrgrgljqfw.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZWVqeXJjZXZqcmdyZ2xqcWZ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTgwMDA2MCwiZXhwIjoyMDI3Mzc2MDYwfQ.HcJ80sv2Xs7Q07R_qAQg4eS-1zOsXG4au8EMFMJpt3w'
-  )
+  const [newPassword, setNewPassword] = useState('')
+  const [repeatPassword, setRepeatPassword] = useState('')
 
-  const handleUploadImage = async (e) => {
-    let file = e.target.files[0]
-    const fileName = uuidv4()
-
-    const { data, error } = await supabase.storage.from('images').upload('/' + fileName, file)
-
-    if (data) {
-      setMedia(fileName)
-    } else {
-      console.log(error)
-    }
+  const handleClear = async () => {
+    setNicknameSetting(nickname)
+    setPhoneNumberSetting(phoneNumber)
+    setNewPassword('')
+    setRepeatPassword('')
   }
 
-  const handleCreateATeam = async () => {
-    if (!teamName || !media) {
-      console.error('Please fill in all fields.')
-      setIsOpenPleaseFill(true)
-      return
+  const handleSave = async () => {
+    let jsonData = {
+      nickname: nicknameSetting,
+      phone_number: phoneNumberSetting,
     }
 
-    const jsonData = {
-      team_name: teamName,
-      team_logo: media,
-      game_id: parseInt(gameId),
+    if (newPassword || repeatPassword) {
+      if (newPassword !== repeatPassword) {
+        console.error('Password not match')
+        setIsOpenPasswordNotMatch(true)
+        return
+      } else {
+        jsonData = { ...jsonData, user_pass: newPassword }
+      }
     }
     console.log(jsonData)
+
     try {
-      const response = await fetch('https://scrim-api-production.up.railway.app/team/create/user-id/' + user_id, {
-        method: 'POST',
+      const response = await fetch('https://scrim-api-production.up.railway.app/update-profile/user-id/' + user_id, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(jsonData),
       })
       if (response.ok) {
-        const data = await response.json()
-        localStorage.setItem('role', 'Manager')
-        // ขอ respone team_id, invite_code, invite_flag
-        localStorage.setItem('team_id', data.team_id)
-        localStorage.setItem('team_name', teamName)
+        localStorage.setItem('nickname', nicknameSetting)
+        localStorage.setItem('phone_number', phoneNumberSetting)
+
+        handleClear()
         setIsOpenSuccess(true)
-        console.log('Create successful', teamName)
-        navigate('/home')
+        console.log('Save successful')
+        navigate('/settings')
       } else {
+        handleClear()
         setIsOpenError(true)
-        console.error('Create failed', response)
+        console.error('Save failed', response)
       }
     } catch (error) {
+      handleClear()
       setIsOpenError(true)
-      console.error('Error occurred while Create in:', error)
+      console.error('Error occurred while Save in:', error)
     }
   }
 
-  let joinATeamComponent = (
+  let settingsComponent = (
     <>
       <Card className='mx-auto'>
-        <h1 className='text-2xl font-bold'>Create a Team</h1>
-        <p className='mt-2 text-gray-600'>Basic Details.</p>
+        <h1 className='text-2xl font-bold'>Profile Settings</h1>
+        <p className='mt-2 text-gray-600'>Profile</p>
         <div className='grid grid-flow-col justify-stretch mt-6'>
           <div>
             <div className='mb-4'>
               <label htmlFor='nickname' className='block text-sm font-medium text-gray-700 mb-2'>
-                Team Name
+                User ID
+              </label>
+              <TextInput disabled className='mb-4' value={user_id} />
+            </div>
+            <div className='mb-4'>
+              <label htmlFor='nickname' className='block text-sm font-medium text-gray-700 mb-2'>
+                Nickname
               </label>
               <TextInput
                 className='mb-4'
-                placeholder='Enter your team name'
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
+                placeholder='Enter your nickname'
+                value={nicknameSetting}
+                onChange={(e) => setNicknameSetting(e.target.value)}
+              />
+            </div>
+            <div className='mb-4'>
+              <label htmlFor='nickname' className='block text-sm font-medium text-gray-700 mb-2'>
+                Email Address
+              </label>
+              <TextInput disabled type='email' className='mb-4' value={email} />
+            </div>
+            <div className='mb-4'>
+              <label htmlFor='phoneNumber' className='block text-sm font-medium text-gray-700 mb-2'>
+                Phone Number
+              </label>
+              <TextInput
+                className='mb-4'
+                type='tel'
+                pattern='[0]{1}[0-9]{9}'
+                placeholder='Enter your phone number'
+                value={phoneNumberSetting}
+                onChange={(e) => setPhoneNumberSetting(e.target.value)}
               />
             </div>
             <div className='mb-4'>
@@ -112,15 +133,36 @@ const HeaderCreateATeam = (props) => {
                 </SelectItem>
               </Select>
             </div>
+            <Divider>
+              <Icon icon={RiShiningFill} variant='simple' size='xs' color='gray-400' />
+            </Divider>
             <div className='mb-4'>
-              <input type='file' onChange={(e) => handleUploadImage(e)} />
-              {media && (
-                <img src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${media}`} className='w-24 h-24 mt-4' />
-              )}
+              <label htmlFor='newpassword' className='block text-sm font-medium text-gray-700 mb-2'>
+                New Password
+              </label>
+              <TextInput
+                type='password'
+                className='mb-4'
+                placeholder='Enter your new password'
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
+            <div className='mb-4'>
+              <label htmlFor='repeatpassword' className='block text-sm font-medium text-gray-700 mb-2'>
+                Repeat Password
+              </label>
+              <TextInput
+                type='password'
+                className='mb-4'
+                placeholder='Enter your repeat password'
+                value={repeatPassword}
+                onChange={(e) => setRepeatPassword(e.target.value)}
+              />
             </div>
             <div className='text-center'>
-              <Button icon={RiArrowRightLine} color='purple' onClick={() => handleCreateATeam()}>
-                CREATE
+              <Button icon={RiArrowRightLine} color='purple' onClick={() => handleSave()}>
+                SAVE
               </Button>
             </div>
           </div>
@@ -148,6 +190,15 @@ const HeaderCreateATeam = (props) => {
   }
   return (
     <div className='flex h-screen bg-gray-100'>
+      <Dialog open={isOpenPasswordNotMatch} onClose={(val) => setIsOpenPasswordNotMatch(val)} static={true}>
+        <DialogPanel>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Password not match.</h3>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Password not match.</p>
+          <Button className='mt-8 w-full' onClick={() => setIsOpenPasswordNotMatch(false)}>
+            Got it!
+          </Button>
+        </DialogPanel>
+      </Dialog>
       <Dialog open={isOpenPleaseFill} onClose={(val) => setIsOpenPleaseFill(val)} static={true}>
         <DialogPanel>
           <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
@@ -218,7 +269,7 @@ const HeaderCreateATeam = (props) => {
           </div>
         </div>
         <div className='p-4'>
-          {joinATeamComponent}
+          {settingsComponent}
           <Divider>
             <Icon icon={RiShiningFill} variant='simple' tooltip='Scrim' size='xs' color='gray-400' />
           </Divider>
@@ -228,4 +279,4 @@ const HeaderCreateATeam = (props) => {
   )
 }
 
-export default HeaderCreateATeam
+export default HeaderSettings

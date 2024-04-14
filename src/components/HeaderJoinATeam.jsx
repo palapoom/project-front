@@ -141,7 +141,7 @@ const HeaderJoinATeam = (props) => {
               <Icon className='h-6 w-6 mr-2' icon={RiGroupLine} variant='simple' tooltip='Team' color='white' />
               Team
             </Link>
-            <Link to='/home' className='flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700'>
+            <Link to='/settings' className='flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700'>
               <Icon className='h-6 w-6 mr-2' icon={RiUserSettingsLine} variant='simple' tooltip='Settings' color='white' />
               Settings
             </Link>

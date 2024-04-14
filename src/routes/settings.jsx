@@ -1,8 +1,8 @@
-import HeaderJoinATeam from '../components/HeaderJoinATeam'
+import HeaderSettings from '../components/HeaderSettings'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function JoinATeam() {
+function Settings() {
   const navigate = useNavigate()
   const [nickname, setNickname] = useState('')
   const [inviteFlag, setInviteFlag] = useState(false)
@@ -37,12 +37,15 @@ function JoinATeam() {
 
   return (
     <div>
-      <HeaderJoinATeam
+      <HeaderSettings
         user_id={localStorage.getItem('user_name')}
         nickname={localStorage.getItem('nickname')}
+        email={localStorage.getItem('email')}
+        phoneNumber={localStorage.getItem('phone_number')}
         team_id={localStorage.getItem('team_id')}
         team_name={localStorage.getItem('team_name')}
         role={localStorage.getItem('role')}
+        game_id={localStorage.getItem('game_id')}
         game_name={localStorage.getItem('game_name')}
         invite_code={inviteCode}
         invite_flag={inviteFlag}
@@ -51,4 +54,4 @@ function JoinATeam() {
   )
 }
 
-export default JoinATeam
+export default Settings

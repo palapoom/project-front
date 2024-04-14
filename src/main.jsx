@@ -10,6 +10,7 @@ import ChangePassword from './routes/change-password'
 import Home from './routes/home'
 import JoinATeam from './routes/join-a-team'
 import CreateATeam from './routes/create-a-team'
+import Settings from './routes/settings'
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: 'create-a-team',
     element: <CreateATeam />,
+  },
+  {
+    path: 'settings',
+    element: <Settings />,
   },
 ])
 

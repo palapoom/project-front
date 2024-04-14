@@ -39,7 +39,7 @@ function CreateATeam() {
     <div>
       <HeaderCreateATeam
         user_id={localStorage.getItem('user_name')}
-        nickname={nickname}
+        nickname={localStorage.getItem('nickname')}
         team_id={localStorage.getItem('team_id')}
         team_name={localStorage.getItem('team_name')}
         role={localStorage.getItem('role')}

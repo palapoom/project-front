@@ -37,7 +37,7 @@ function Home() {
   return (
     <div>
       <Header
-        nickname={nickname}
+        nickname={localStorage.getItem('nickname')}
         team_id={localStorage.getItem('team_id')}
         team_name={localStorage.getItem('team_name')}
         role={localStorage.getItem('role')}

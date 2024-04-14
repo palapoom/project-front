@@ -57,9 +57,17 @@ const Header = (props) => {
   const [isOpenError, setIsOpenError] = useState(false)
   const [isOpenPostScrim, setIsOpenPostScrim] = useState(false)
   const [isOpenTeamBattle, setIsOpenTeamBattle] = useState(false)
+  const [isOpenTeamBattleMatch, setIsOpenTeamBattleMatch] = useState(false)
   const [teamBattle, setTeamBattle] = useState([undefined])
   const [member, setMember] = useState([])
   const [matches, setMatches] = useState([])
+  const [matchButton, setMatchButton] = useState(() => (
+    <div className='flex items-center'>
+      <Button className='mt-8 w-full' onClick={() => setIsOpenTeamBattleMatch(false)}>
+        Got it!
+      </Button>
+    </div>
+  ))
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -191,6 +199,36 @@ const Header = (props) => {
       }
     } catch (error) {
       console.error('Error occurred while Load TeamBattle in:', error)
+    }
+  }
+
+  const handleTeamBattleMatch = async (teamId, scrimId, mapScrim, date, time) => {
+    try {
+      if (role == 'Manager' || role == 'Coach') {
+        setMatchButton(
+          <div className='flex items-center'>
+            <Button className='mt-8 mr-2 w-6/12' onClick={() => setIsOpenTeamBattleMatch(false)}>
+              Got it!
+            </Button>
+            <Button color='red' className='mt-8 w-6/12' onClick={() => handleScrimCancel(scrimId)}>
+              Cancel Match
+            </Button>
+          </div>
+        )
+      }
+      const responseTeamBattleMatch = await fetch('https://scrim-api-production.up.railway.app/team/detail/team-id/' + teamId)
+      if (responseTeamBattleMatch.ok) {
+        let dataTeamBattleMatch = await responseTeamBattleMatch.json()
+        dataTeamBattleMatch = { ...dataTeamBattleMatch, scrim_map: mapScrim, scrim_date: date, scrim_time: time }
+
+        setTeamBattle(dataTeamBattleMatch)
+        setIsOpenTeamBattleMatch(true)
+        console.log('Load TeamBattleMatch successful', dataTeamBattleMatch)
+      } else {
+        console.error('Load TeamBattleMatch failed', responseTeamBattleMatch)
+      }
+    } catch (error) {
+      console.error('Error occurred while Load TeamBattleMatch in:', error)
     }
   }
 
@@ -429,6 +467,7 @@ const Header = (props) => {
       if (response.ok) {
         getScrim()
         getScrimOffer()
+        getMatches()
         setIsOpenSuccess(true)
         console.log('ScrimCancel successful', teamName)
       } else {
@@ -649,7 +688,12 @@ const Header = (props) => {
       <TableRow key={index}>
         <TableCell>{matcheDate.toLocaleDateString()}</TableCell>
         <TableCell>
-          <div className='flex items-center cursor-pointer' onClick={() => handleTeamBattle(item.team_id)}>
+          <div
+            className='flex items-center cursor-pointer'
+            onClick={() =>
+              handleTeamBattleMatch(item.team_id, item.scrim_id, item.scrim_map, matcheDate.toLocaleDateString(), formattedTime)
+            }
+          >
             <img
               src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
               className='h-4 w-4 rounded-full me-2'
@@ -1167,6 +1211,35 @@ const Header = (props) => {
   }
   return (
     <div className='flex h-screen bg-gray-100'>
+      <Dialog open={isOpenTeamBattleMatch} onClose={(val) => setIsOpenTeamBattleMatch(val)} static={true}>
+        <DialogPanel>
+          <div className='flex items-center'>
+            <img
+              src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${teamBattle.team_logo}`}
+              className='h-20 w-20 rounded-full me-2'
+            />
+            <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
+              {teamBattle.team_name}
+            </h3>
+          </div>
+
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+            <div className='mb-4'>Members</div>
+            {memberBattleComponent}
+          </p>
+
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+            <div className='mb-4'>Map : {teamBattle.scrim_map}</div>
+          </p>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+            <div className='mb-4'>Date : {teamBattle.scrim_date}</div>
+          </p>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+            <div className='mb-4'>Time : {teamBattle.scrim_time}</div>
+          </p>
+          {matchButton}
+        </DialogPanel>
+      </Dialog>
       <Dialog open={isOpenTeamBattle} onClose={(val) => setIsOpenTeamBattle(val)} static={true}>
         <DialogPanel>
           <div className='flex items-center'>
@@ -1258,7 +1331,7 @@ const Header = (props) => {
               <Icon className='h-6 w-6 mr-2' icon={RiGroupLine} variant='simple' tooltip='Team' color='white' />
               Team
             </Link>
-            <Link to='/home' className='flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700'>
+            <Link to='/settings' className='flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700'>
               <Icon className='h-6 w-6 mr-2' icon={RiUserSettingsLine} variant='simple' tooltip='Settings' color='white' />
               Settings
             </Link>
