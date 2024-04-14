@@ -15,10 +15,19 @@ const HeaderSettings = (props) => {
   const [isOpenError, setIsOpenError] = useState(false)
   const [isOpenPasswordNotMatch, setIsOpenPasswordNotMatch] = useState(false)
   const [isOpenPhoneNumberInvalid, setIsOpenPhoneNumberInvalid] = useState(false)
+  const [isSave, setIsSave] = useState(true)
   const navigate = useNavigate()
 
   const [newPassword, setNewPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
+
+  useEffect(() => {
+    if (nicknameSetting != nickname || phoneNumberSetting != phoneNumber || newPassword || repeatPassword) {
+      setIsSave(false)
+    } else {
+      setIsSave(true)
+    }
+  }, [nicknameSetting, phoneNumberSetting, newPassword, repeatPassword, nickname, phoneNumber])
 
   const handleClear = async () => {
     setNicknameSetting(nickname)
@@ -172,7 +181,7 @@ const HeaderSettings = (props) => {
               />
             </div>
             <div className='text-center'>
-              <Button icon={RiArrowRightLine} color='purple' onClick={() => handleSave()}>
+              <Button disabled={isSave} icon={RiArrowRightLine} color='purple' onClick={() => handleSave()}>
                 SAVE
               </Button>
             </div>
@@ -202,7 +211,9 @@ const HeaderSettings = (props) => {
     <div className='flex h-screen bg-gray-100'>
       <Dialog open={isOpenPhoneNumberInvalid} onClose={(val) => setIsOpenPhoneNumberInvalid(val)} static={true}>
         <DialogPanel>
-          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Phone number is not valid.</h3>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
+            Phone number is not valid.
+          </h3>
           <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Phone number is not valid.</p>
           <Button className='mt-8 w-full' onClick={() => setIsOpenPhoneNumberInvalid(false)}>
             Got it!
