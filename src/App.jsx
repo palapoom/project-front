@@ -105,12 +105,6 @@ function App() {
                 Password
               </label>
               <TextInput type='password' placeholder='Enter your password' value={userPass} onChange={(e) => setUserPass(e.target.value)} />
-              <Link
-                to='/change-password'
-                className='text-xs text-gray-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-              >
-                Forgot Password?
-              </Link>
             </div>
             <div className='flex items-center justify-between mb-4'>
               <p className='text-xs text-center text-slate-400'>Don't Have an Account?</p>
