@@ -73,12 +73,14 @@ const HeaderSettings = (props) => {
         body: JSON.stringify(jsonData),
       })
       if (response.ok) {
+        setNicknameSetting(nicknameSetting)
+        setPhoneNumberSetting(phoneNumberSetting)
         localStorage.setItem('nickname', nicknameSetting)
         localStorage.setItem('phone_number', phoneNumberSetting)
         handleClear()
         setIsOpenSuccess(true)
         console.log('Save successful')
-        navigate('/settings')
+        // navigate('/settings')
       } else {
         handleClear()
         setIsOpenError(true)
@@ -243,7 +245,7 @@ const HeaderSettings = (props) => {
       <Dialog open={isOpenSuccess} onClose={(val) => setIsOpenSuccess(val)} static={true}>
         <DialogPanel>
           <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Success.</h3>
-          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Update successfuly.</p>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Update Successfully.</p>
           <Button className='mt-8 w-full' onClick={() => setIsOpenSuccess(false)}>
             Got it!
           </Button>

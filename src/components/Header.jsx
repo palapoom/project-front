@@ -1309,7 +1309,7 @@ const Header = (props) => {
       <Dialog open={isOpenSuccess} onClose={(val) => setIsOpenSuccess(val)} static={true}>
         <DialogPanel>
           <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Success.</h3>
-          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Update successfuly.</p>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Update Successfully.</p>
           <Button className='mt-8 w-full' onClick={() => setIsOpenSuccess(false)}>
             Got it!
           </Button>
