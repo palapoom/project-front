@@ -53,6 +53,7 @@ const Header = (props) => {
   const [selectedMapType, setSelectedMapType] = useState('all')
   const [selectedMaps, setSelectedMaps] = useState([])
   const [isOpenPleaseFill, setIsOpenPleaseFill] = useState(false)
+  const [isOpenPleaseFillAll, setIsOpenPleaseFillAll] = useState(false)
   const [isOpenSuccess, setIsOpenSuccess] = useState(false)
   const [isOpenError, setIsOpenError] = useState(false)
   const [isOpenPostScrim, setIsOpenPostScrim] = useState(false)
@@ -255,6 +256,11 @@ const Header = (props) => {
 
   const handlePostScrim = async () => {
     try {
+      if (!scrimDate || !scrimTime || !scrimMap) {
+        setIsOpenPleaseFillAll(true)
+        return
+      }
+
       let gameId
       if (game_name == 'Valorant') {
         gameId = 1
@@ -281,14 +287,23 @@ const Header = (props) => {
 
       if (responseChangeRole.ok) {
         getScrim()
+        setScrimDate(undefined)
+        setScrimTime('')
+        setScrimMap()
         setIsOpenSuccess(true)
         setIsOpenPostScrim(false)
         console.log('PostScrim successful')
       } else {
+        setScrimDate(undefined)
+        setScrimTime('')
+        setScrimMap()
         setIsOpenError(true)
         console.error('PostScrim failed')
       }
     } catch (error) {
+      setScrimDate(undefined)
+      setScrimTime('')
+      setScrimMap()
       setIsOpenError(true)
       console.error('Error occurred while PostScrim in:', error)
     }
@@ -1290,6 +1305,17 @@ const Header = (props) => {
           </p>
           <Button className='mt-8 w-full' onClick={() => handlePostScrim()}>
             Save your request
+          </Button>
+        </DialogPanel>
+      </Dialog>
+      <Dialog open={isOpenPleaseFillAll} onClose={(val) => setIsOpenPleaseFillAll(val)} static={true}>
+        <DialogPanel>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
+            Please fill in all field.
+          </h3>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Please fill in all field.</p>
+          <Button className='mt-8 w-full' onClick={() => setIsOpenPleaseFillAll(false)}>
+            Got it!
           </Button>
         </DialogPanel>
       </Dialog>
