@@ -59,6 +59,7 @@ const Header = (props) => {
   const [isOpenPostScrim, setIsOpenPostScrim] = useState(false)
   const [isOpenTeamBattle, setIsOpenTeamBattle] = useState(false)
   const [isOpenTeamBattleMatch, setIsOpenTeamBattleMatch] = useState(false)
+  const [isOpenDeleteTeam, setIsOpenDeleteTeam] = useState(false)
   const [teamBattle, setTeamBattle] = useState([undefined])
   const [member, setMember] = useState([])
   const [matches, setMatches] = useState([])
@@ -556,6 +557,42 @@ const Header = (props) => {
     }
   }
 
+  const handleDeleteTeam = async () => {
+    try {
+      const response = await fetch('https://scrim-api-production.up.railway.app/team/team-id/' + team_id, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      if (response.ok) {
+        localStorage.setItem('role', 'Player')
+        localStorage.setItem('team_id', 'null')
+        localStorage.setItem('team_name', 'null')
+        localStorage.setItem('team_logo', 'null')
+        localStorage.removeItem('invite_code')
+        localStorage.removeItem('invite_flag')
+
+        getGameMap()
+        getMember()
+        getScrim()
+        getScrimOffer()
+        getMatches()
+
+        setIsOpenDeleteTeam(false)
+
+        navigate('/home')
+        console.log('DeleteTeam successful', teamName)
+      } else {
+        setIsOpenError(true)
+        console.error('DeleteTeam failed', response)
+      }
+    } catch (error) {
+      setIsOpenError(true)
+      console.error('Error occurred while DeleteTeam in:', error)
+    }
+  }
+
   const handleScrimDelete = async (scrimId) => {
     const jsonData = {
       scrim_id: parseInt(scrimId),
@@ -814,6 +851,9 @@ const Header = (props) => {
                           />
                         )}
                       </div>
+                      <Button color='red' onClick={() => setIsOpenDeleteTeam(true)}>
+                        DELETE TEAM
+                      </Button>
                     </div>
                     <div className='text-center'>
                       <Button className='mb-2' disabled={inviteFlag} icon={RiGroupLine} color='purple' onClick={() => handleGenerateCode()}>
@@ -1259,6 +1299,20 @@ const Header = (props) => {
   }
   return (
     <div className='flex h-screen bg-gray-100'>
+      <Dialog open={isOpenDeleteTeam} onClose={(val) => setIsOpenDeleteTeam(val)} static={true}>
+        <DialogPanel>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Confirm to Delete Team.</h3>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Confirm to Delete Team.</p>
+          <div className='flex items-center'>
+            <Button className='mt-8 mr-2 w-6/12' onClick={() => setIsOpenDeleteTeam(false)}>
+              Cancel
+            </Button>
+            <Button color='red' className='mt-8 w-6/12' onClick={() => handleDeleteTeam()}>
+              Confirm Delete
+            </Button>
+          </div>
+        </DialogPanel>
+      </Dialog>
       <Dialog open={isOpenTeamBattleMatch} onClose={(val) => setIsOpenTeamBattleMatch(val)} static={true}>
         <DialogPanel>
           <div className='flex items-center'>
