@@ -467,6 +467,36 @@ const Header = (props) => {
     }
   }
 
+  const handleScrimCancelOffer = async (scrimId, teamId) => {
+    const jsonData = {
+      scrim_id: parseInt(scrimId),
+      team_id: parseInt(teamId),
+    }
+    console.log('ScrimCancelOffer', jsonData)
+    try {
+      const response = await fetch('https://scrim-api-production.up.railway.app/scrim/cancel', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+      if (response.ok) {
+        getScrim()
+        getScrimOffer()
+        getMatches()
+        setIsOpenSuccess(true)
+        console.log('ScrimCancelOffer successful', teamName)
+      } else {
+        setIsOpenError(true)
+        console.error('ScrimCancelOffer failed', response)
+      }
+    } catch (error) {
+      setIsOpenError(true)
+      console.error('Error occurred while ScrimCancelOffer in:', error)
+    }
+  }
+
   const handleScrimCancel = async (scrimId) => {
     const jsonData = {
       scrim_id: parseInt(scrimId),
@@ -622,7 +652,13 @@ const Header = (props) => {
         </TableCell>
         <TableCell>
           <Button variant='light'>
-            <Icon icon={RiCloseCircleLine} onClick={() => handleScrimCancel(item.scrim_id)} variant='simple' tooltip='Cancel' color='red' />
+            <Icon
+              icon={RiCloseCircleLine}
+              onClick={() => handleScrimCancelOffer(item.scrim_id, item.team_id)}
+              variant='simple'
+              tooltip='Cancel Offer'
+              color='red'
+            />
           </Button>
         </TableCell>
       </TableRow>
