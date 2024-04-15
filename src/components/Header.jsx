@@ -261,19 +261,12 @@ const Header = (props) => {
         return
       }
 
-      let gameId
-      if (game_name == 'Valorant') {
-        gameId = 1
-      } else if (game_name == 'CSGO2') {
-        gameId = 2
-      }
-
       const jsonData = {
         scrim_date: scrimDate.toLocaleDateString(),
         scrim_time: scrimTime,
         scrim_map: scrimMap,
         team_id: parseInt(team_id),
-        game_id: parseInt(gameId),
+        game_id: parseInt(game_id),
       }
       console.log('Post Scrim', jsonData)
 
