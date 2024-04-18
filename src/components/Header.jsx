@@ -455,7 +455,11 @@ const Header = (props) => {
         body: JSON.stringify(jsonData),
       })
       if (response.ok) {
+        getGameMap()
+        getMember()
+        getScrim()
         getScrimOffer()
+        getMatches()
         setIsOpenSuccess(true)
         console.log('ScrimAccept successful', teamName)
       } else {
