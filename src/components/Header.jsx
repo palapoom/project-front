@@ -858,7 +858,13 @@ const Header = (props) => {
         <>
           <Card className='mx-auto'>
             <h1 className='text-2xl font-bold'>Team</h1>
-            <h1 className='text-xl font-bold'>{teamName}</h1>
+            <div className='flex items-center'>
+              <img
+                src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${team_logo}`}
+                className='object-cover h-12 w-12 rounded-full me-2'
+              />
+              <h1 className='text-xl font-bold'>{teamName}</h1>
+            </div>
             <TabGroup>
               <TabList className='mt-4'>
                 <Tab>Team Settings</Tab>
