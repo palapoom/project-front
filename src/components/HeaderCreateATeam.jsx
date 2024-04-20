@@ -113,7 +113,12 @@ const HeaderCreateATeam = (props) => {
               </Select>
             </div>
             <div className='mb-4'>
-              <input type='file' onChange={(e) => handleUploadImage(e)} />
+              <input
+                type='file'
+                accept='image/*'
+                onChange={(e) => handleUploadImage(e)}
+                className='mt-2 block w-full text-sm file:mr-4 file:rounded-md file:border-0 file:bg-teal-500 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-teal-600 focus:outline-none disabled:pointer-events-none disabled:opacity-60'
+              />
               {media && (
                 <img src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${media}`} className='w-24 h-24 mt-4' />
               )}
