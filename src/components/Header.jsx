@@ -54,8 +54,8 @@ const Header = (props) => {
   const [selectedMaps, setSelectedMaps] = useState([])
   const [isOpenPleaseFill, setIsOpenPleaseFill] = useState(false)
   const [isOpenPleaseFillAll, setIsOpenPleaseFillAll] = useState(false)
-  const [isOpenSuccess, setIsOpenSuccess] = useState(false)
-  const [isOpenError, setIsOpenError] = useState(false)
+  const [isOpenErrorFlex, setIsOpenErrorFlex] = useState(false)
+  const [errMsg, setErrMsg] = useState('')
   const [isOpenPostScrim, setIsOpenPostScrim] = useState(false)
   const [isOpenTeamBattle, setIsOpenTeamBattle] = useState(false)
   const [isOpenTeamBattleMatch, setIsOpenTeamBattleMatch] = useState(false)
@@ -284,21 +284,24 @@ const Header = (props) => {
         setScrimDate(undefined)
         setScrimTime('')
         setScrimMap()
-        setIsOpenSuccess(true)
+        setErrMsg('PostScrim successful')
+        setIsOpenErrorFlex(true)
         setIsOpenPostScrim(false)
         console.log('PostScrim successful')
       } else {
         setScrimDate(undefined)
         setScrimTime('')
         setScrimMap()
-        setIsOpenError(true)
+        setErrMsg('PostScrim failed')
+        setIsOpenErrorFlex(true)
         console.error('PostScrim failed')
       }
     } catch (error) {
       setScrimDate(undefined)
       setScrimTime('')
       setScrimMap()
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while PostScrim in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while PostScrim in:', error)
     }
   }
@@ -331,14 +334,17 @@ const Header = (props) => {
       })
       if (responseKick.ok) {
         getMember()
-        setIsOpenSuccess(true)
+        setErrMsg(`Kick successful ${userId}`)
+        setIsOpenErrorFlex(true)
         console.log('Kick successful', userId)
       } else {
-        setIsOpenError(true)
+        setErrMsg(`Kick failed ${userId}`)
+        setIsOpenErrorFlex(true)
         console.error('Kick failed', userId)
       }
     } catch (error) {
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while Kick in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while Kick in:', error)
     }
   }
@@ -360,14 +366,17 @@ const Header = (props) => {
 
       if (responseChangeRole.ok) {
         getMember()
-        setIsOpenSuccess(true)
+        setErrMsg(`ChangeRole successful ${userId}`)
+        setIsOpenErrorFlex(true)
         console.log('ChangeRole successful', userId)
       } else {
-        setIsOpenError(true)
+        setErrMsg(`ChangeRole failed ${userId}`)
+        setIsOpenErrorFlex(true)
         console.error('ChangeRole failed', userId)
       }
     } catch (error) {
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while ChangeRole in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while ChangeRole in:', error)
     }
   }
@@ -395,11 +404,9 @@ const Header = (props) => {
         setInviteCode(dataInviteCode.invite_code)
         console.log('Update successful', teamName)
       } else {
-        // setIsOpenError(true)
         console.error('Update failed', responseInviteCode)
       }
     } catch (error) {
-      // setIsOpenError(true)
       console.error('Error occurred while Update in:', error)
     }
   }
@@ -428,14 +435,17 @@ const Header = (props) => {
       if (response.ok) {
         localStorage.setItem('team_name', teamName)
         localStorage.setItem('team_logo', media)
-        setIsOpenSuccess(true)
+        setErrMsg(`Update successful ${teamName}`)
+        setIsOpenErrorFlex(true)
         console.log('Update successful', teamName)
       } else {
-        setIsOpenError(true)
+        setErrMsg(`Update failed ${response.status}`)
+        setIsOpenErrorFlex(true)
         console.error('Update failed', response)
       }
     } catch (error) {
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while Update in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while Update in:', error)
     }
   }
@@ -460,14 +470,17 @@ const Header = (props) => {
         getScrim()
         getScrimOffer()
         getMatches()
-        setIsOpenSuccess(true)
+        setErrMsg(`ScrimAccept successful ${teamName}`)
+        setIsOpenErrorFlex(true)
         console.log('ScrimAccept successful', teamName)
       } else {
-        setIsOpenError(true)
+        setErrMsg(`ScrimAccept failed ${response.status}`)
+        setIsOpenErrorFlex(true)
         console.error('ScrimAccept failed', response)
       }
     } catch (error) {
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while ScrimAccept in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while ScrimAccept in:', error)
     }
   }
@@ -490,14 +503,17 @@ const Header = (props) => {
         getScrim()
         getScrimOffer()
         getMatches()
-        setIsOpenSuccess(true)
+        setErrMsg(`ScrimCancelOffer successful ${teamName}`)
+        setIsOpenErrorFlex(true)
         console.log('ScrimCancelOffer successful', teamName)
       } else {
-        setIsOpenError(true)
+        setErrMsg(`ScrimCancelOffer failed ${response.status}`)
+        setIsOpenErrorFlex(true)
         console.error('ScrimCancelOffer failed', response)
       }
     } catch (error) {
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while ScrimCancelOffer in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while ScrimCancelOffer in:', error)
     }
   }
@@ -520,14 +536,17 @@ const Header = (props) => {
         getScrim()
         getScrimOffer()
         getMatches()
-        setIsOpenSuccess(true)
+        setErrMsg(`ScrimCancel successful ${teamName}`)
+        setIsOpenErrorFlex(true)
         console.log('ScrimCancel successful', teamName)
       } else {
-        setIsOpenError(true)
+        setErrMsg(`ScrimCancel failed ${response.status}`)
+        setIsOpenErrorFlex(true)
         console.error('ScrimCancel failed', response)
       }
     } catch (error) {
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while ScrimCancel in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while ScrimCancel in:', error)
     }
   }
@@ -549,14 +568,17 @@ const Header = (props) => {
       if (response.ok) {
         getScrim()
         getScrimOffer()
-        setIsOpenSuccess(true)
+        setErrMsg(`ScrimOffer successful ${teamName}`)
+        setIsOpenErrorFlex(true)
         console.log('ScrimOffer successful', teamName)
       } else {
-        setIsOpenError(true)
+        setErrMsg(`ScrimOffer failed ${response.status}`)
+        setIsOpenErrorFlex(true)
         console.error('ScrimOffer failed', response)
       }
     } catch (error) {
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while ScrimOffer in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while ScrimOffer in:', error)
     }
   }
@@ -588,11 +610,13 @@ const Header = (props) => {
         navigate('/home')
         console.log('DeleteTeam successful', teamName)
       } else {
-        setIsOpenError(true)
+        setErrMsg(`DeleteTeam failed ${response.status}`)
+        setIsOpenErrorFlex(true)
         console.error('DeleteTeam failed', response)
       }
     } catch (error) {
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while DeleteTeam in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while DeleteTeam in:', error)
     }
   }
@@ -613,14 +637,17 @@ const Header = (props) => {
       if (response.ok) {
         getScrim()
         getScrimOffer()
-        setIsOpenSuccess(true)
+        setErrMsg(`ScrimDelete successful ${teamName}`)
+        setIsOpenErrorFlex(true)
         console.log('ScrimDelete successful', teamName)
       } else {
-        setIsOpenError(true)
+        setErrMsg(`ScrimDelete failed ${response.status}`)
+        setIsOpenErrorFlex(true)
         console.error('ScrimDelete failed', response)
       }
     } catch (error) {
-      setIsOpenError(true)
+      setErrMsg(`Error occurred while ScrimDelete in: ${error}`)
+      setIsOpenErrorFlex(true)
       console.error('Error occurred while ScrimDelete in:', error)
     }
   }
@@ -1422,20 +1449,11 @@ const Header = (props) => {
           </Button>
         </DialogPanel>
       </Dialog>
-      <Dialog open={isOpenSuccess} onClose={(val) => setIsOpenSuccess(val)} static={true}>
+      <Dialog open={isOpenErrorFlex} onClose={(val) => setIsOpenErrorFlex(val)} static={true}>
         <DialogPanel>
-          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Success.</h3>
-          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Update Successfully.</p>
-          <Button className='mt-8 w-full' onClick={() => setIsOpenSuccess(false)}>
-            Got it!
-          </Button>
-        </DialogPanel>
-      </Dialog>
-      <Dialog open={isOpenError} onClose={(val) => setIsOpenError(val)} static={true}>
-        <DialogPanel>
-          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Error.</h3>
-          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Email already exist.</p>
-          <Button className='mt-8 w-full' onClick={() => setIsOpenError(false)}>
+          <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>Alert</h3>
+          <p className='mt-2 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>{errMsg}</p>
+          <Button className='mt-8 w-full' onClick={() => setIsOpenErrorFlex(false)}>
             Got it!
           </Button>
         </DialogPanel>
