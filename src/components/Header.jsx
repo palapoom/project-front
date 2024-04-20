@@ -707,7 +707,7 @@ const Header = (props) => {
           <div className='flex items-center'>
             <img
               src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
-              className='h-4 w-4 rounded-full me-2'
+              className='object-cover h-4 w-4 rounded-full me-2'
             />
             {item.team_name}
           </div>
@@ -767,7 +767,7 @@ const Header = (props) => {
           <div className='flex items-center cursor-pointer' onClick={() => handleTeamBattle(item.team_id)}>
             <img
               src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
-              className='h-4 w-4 rounded-full me-2'
+              className='object-cover h-4 w-4 rounded-full me-2'
             />
             {item.team_name}
           </div>
@@ -820,7 +820,7 @@ const Header = (props) => {
           >
             <img
               src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
-              className='h-4 w-4 rounded-full me-2'
+              className='object-cover h-4 w-4 rounded-full me-2'
             />
             {item.team_name}
           </div>
@@ -887,7 +887,7 @@ const Header = (props) => {
                         {media && (
                           <img
                             src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${media}`}
-                            className='w-24 h-24 mt-4'
+                            className='object-cover w-24 h-24 mt-4'
                           />
                         )}
                       </div>
@@ -1313,7 +1313,7 @@ const Header = (props) => {
           <div className='flex items-center'>
             <img
               src='https://png.pngtree.com/png-vector/20191003/ourlarge/pngtree-cyber-man-icon-isolated-on-abstract-background-png-image_1779333.jpg'
-              className='h-4 w-4 rounded-full me-2'
+              className='object-cover h-4 w-4 rounded-full me-2'
             />
             {rolememberBattle}
           </div>
@@ -1360,7 +1360,7 @@ const Header = (props) => {
           <div className='flex items-center'>
             <img
               src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${teamBattle.team_logo}`}
-              className='h-20 w-20 rounded-full me-2'
+              className='object-cover h-20 w-20 rounded-full me-2'
             />
             <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
               {teamBattle.team_name}
@@ -1389,7 +1389,7 @@ const Header = (props) => {
           <div className='flex items-center'>
             <img
               src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${teamBattle.team_logo}`}
-              className='h-20 w-20 rounded-full me-2'
+              className='object-cover h-20 w-20 rounded-full me-2'
             />
             <h3 className='text-lg font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong'>
               {teamBattle.team_name}

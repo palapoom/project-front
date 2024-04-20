@@ -141,13 +141,13 @@ function Register() {
               <Select defaultValue={gameId} value={gameId} onValueChange={(e) => setGameId(e)}>
                 <SelectItem value='1'>
                   <div className='inline-flex items-center'>
-                    <img src={valorant} className='h-4 w-4 rounded-full me-2' />
+                    <img src={valorant} className='object-cover h-4 w-4 rounded-full me-2' />
                     Valorant
                   </div>
                 </SelectItem>
                 <SelectItem value='2'>
                   <div className='inline-flex items-center'>
-                    <img src={counterstrike2} className='h-4 w-4 rounded-full me-2' />
+                    <img src={counterstrike2} className='object-cover h-4 w-4 rounded-full me-2' />
                     CSGO2
                   </div>
                 </SelectItem>

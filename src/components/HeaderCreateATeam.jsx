@@ -100,13 +100,13 @@ const HeaderCreateATeam = (props) => {
               <Select disabled defaultValue={gameId} value={gameId} onValueChange={(e) => setGameId(e)}>
                 <SelectItem value='1'>
                   <div className='inline-flex items-center'>
-                    <img src={valorant} className='h-4 w-4 rounded-full me-2' />
+                    <img src={valorant} className='object-cover h-4 w-4 rounded-full me-2' />
                     Valorant
                   </div>
                 </SelectItem>
                 <SelectItem value='2'>
                   <div className='inline-flex items-center'>
-                    <img src={counterstrike2} className='h-4 w-4 rounded-full me-2' />
+                    <img src={counterstrike2} className='object-cover h-4 w-4 rounded-full me-2' />
                     CSGO2
                   </div>
                 </SelectItem>
@@ -120,7 +120,7 @@ const HeaderCreateATeam = (props) => {
                 className='mt-2 block w-full text-sm file:mr-4 file:rounded-md file:border-0 file:bg-teal-500 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-teal-600 focus:outline-none disabled:pointer-events-none disabled:opacity-60'
               />
               {media && (
-                <img src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${media}`} className='w-24 h-24 mt-4' />
+                <img src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${media}`} className='object-cover w-24 h-24 mt-4' />
               )}
             </div>
             <div className='text-center'>
