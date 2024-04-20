@@ -2,12 +2,6 @@ import { useState } from 'react'
 import { Divider, Card, TextInput, Dialog, DialogPanel, Button, Icon } from '@tremor/react'
 import { RiUserSettingsLine, RiLogoutBoxRLine, RiGroupLine, RiShiningFill, RiArrowRightLine } from '@remixicon/react'
 import { Link, useNavigate } from 'react-router-dom'
-import PropTypes from 'prop-types'
-
-HeaderJoinATeam.propTypes = {
-  user_id: PropTypes.any.isRequired,
-  nickname: PropTypes.any.isRequired,
-}
 
 const HeaderJoinATeam = (props) => {
   const { user_id, nickname } = props

@@ -4,15 +4,6 @@ import { RiUserSettingsLine, RiLogoutBoxRLine, RiGroupLine, RiShiningFill, RiArr
 import { Link, useNavigate } from 'react-router-dom'
 import valorant from '../assets/valorant.svg'
 import counterstrike2 from '../assets/counterstrike2.svg'
-import PropTypes from 'prop-types'
-
-HeaderSettings.propTypes = {
-  user_id: PropTypes.any.isRequired,
-  nickname: PropTypes.any.isRequired,
-  email: PropTypes.any.isRequired,
-  phoneNumber: PropTypes.any.isRequired,
-  game_id: PropTypes.any.isRequired,
-}
 
 const HeaderSettings = (props) => {
   const { user_id, nickname, email, phoneNumber, game_id } = props

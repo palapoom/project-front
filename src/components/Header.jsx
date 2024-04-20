@@ -37,19 +37,6 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
-import PropTypes from 'prop-types'
-
-Header.propTypes = {
-  nickname: PropTypes.any.isRequired,
-  team_id: PropTypes.any.isRequired,
-  team_name: PropTypes.any.isRequired,
-  role: PropTypes.any.isRequired,
-  game_id: PropTypes.any.isRequired,
-  game_name: PropTypes.any.isRequired,
-  invite_code: PropTypes.any.isRequired,
-  invite_flag: PropTypes.any.isRequired,
-  team_logo: PropTypes.any.isRequired,
-}
 
 const Header = (props) => {
   const { nickname, team_id, team_name, role, game_id, game_name, invite_code, invite_flag, team_logo } = props

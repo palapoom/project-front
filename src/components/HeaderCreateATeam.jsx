@@ -6,13 +6,6 @@ import valorant from '../assets/valorant.svg'
 import counterstrike2 from '../assets/counterstrike2.svg'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
-import PropTypes from 'prop-types'
-
-HeaderCreateATeam.propTypes = {
-  user_id: PropTypes.any.isRequired,
-  nickname: PropTypes.any.isRequired,
-  game_id: PropTypes.any.isRequired,
-}
 
 const HeaderCreateATeam = (props) => {
   const { user_id, nickname, game_id } = props
