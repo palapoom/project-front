@@ -47,6 +47,8 @@ const Header = (props) => {
   const [scrim, setScrim] = useState([]) // can mock
   const [scrimOffer, setScrimOffer] = useState([])
   const [media, setMedia] = useState(team_logo)
+  const [teamLogoOnTop, setTeamLogoOnTop] = useState(team_logo)
+  const [teamNameOnTop, setTeamNameOnTop] = useState(team_name)
   const [teamName, setTeamName] = useState(team_name)
   const [inviteFlag, setInviteFlag] = useState(invite_flag == 'true')
   const [inviteCode, setInviteCode] = useState(invite_code)
@@ -433,6 +435,8 @@ const Header = (props) => {
         body: JSON.stringify(jsonData),
       })
       if (response.ok) {
+        setTeamNameOnTop(teamName)
+        setTeamLogoOnTop(media)
         localStorage.setItem('team_name', teamName)
         localStorage.setItem('team_logo', media)
         setErrMsg(`Update successful ${teamName}`)
@@ -860,10 +864,10 @@ const Header = (props) => {
             <h1 className='text-2xl font-bold'>Team</h1>
             <div className='flex items-center'>
               <img
-                src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${team_logo}`}
+                src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${teamLogoOnTop}`}
                 className='object-cover h-12 w-12 rounded-full me-2'
               />
-              <h1 className='text-xl font-bold'>{teamName}</h1>
+              <h1 className='text-xl font-bold'>{teamNameOnTop}</h1>
             </div>
             <TabGroup>
               <TabList className='mt-4'>
@@ -1116,10 +1120,10 @@ const Header = (props) => {
             <h1 className='text-2xl font-bold'>Team</h1>
             <div className='flex items-center'>
               <img
-                src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${team_logo}`}
+                src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${teamLogoOnTop}`}
                 className='object-cover h-12 w-12 rounded-full me-2'
               />
-              <h1 className='text-xl font-bold'>{teamName}</h1>
+              <h1 className='text-xl font-bold'>{teamNameOnTop}</h1>
             </div>
             <TabGroup>
               <TabList className='mt-4'>
@@ -1226,10 +1230,10 @@ const Header = (props) => {
             <h1 className='text-2xl font-bold'>Team</h1>
             <div className='flex items-center'>
               <img
-                src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${team_logo}`}
+                src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${teamLogoOnTop}`}
                 className='object-cover h-12 w-12 rounded-full me-2'
               />
-              <h1 className='text-xl font-bold'>{teamName}</h1>
+              <h1 className='text-xl font-bold'>{teamNameOnTop}</h1>
             </div>
             <TabGroup>
               <TabList className='mt-4'>
