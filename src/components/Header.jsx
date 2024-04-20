@@ -828,6 +828,7 @@ const Header = (props) => {
         <>
           <Card className='mx-auto'>
             <h1 className='text-2xl font-bold'>Team</h1>
+            <h1 className='text-xl font-bold'>{teamName}</h1>
             <TabGroup>
               <TabList className='mt-4'>
                 <Tab>Team Settings</Tab>
@@ -1072,6 +1073,7 @@ const Header = (props) => {
         <>
           <Card className='mx-auto'>
             <h1 className='text-2xl font-bold'>Team</h1>
+            <h1 className='text-xl font-bold'>{teamName}</h1>
             <TabGroup>
               <TabList className='mt-4'>
                 <Tab>Manage Scrim</Tab>
@@ -1175,6 +1177,7 @@ const Header = (props) => {
         <>
           <Card className='mx-auto'>
             <h1 className='text-2xl font-bold'>Team</h1>
+            <h1 className='text-xl font-bold'>{teamName}</h1>
             <TabGroup>
               <TabList className='mt-4'>
                 <Tab>Matches</Tab>
