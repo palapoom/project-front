@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 function ChangePassword() {
   const [email, setEmail] = useState('')
   const [errMsg, setErrMsg] = useState('')
+  const [isForgot, setIsForgot] = useState(false)
   const [isOpenDialog, setIsOpenDialog] = useState(false)
 
   const handleClear = async () => {
@@ -12,12 +13,14 @@ function ChangePassword() {
   }
 
   const handleSubmit = async (event) => {
+    setIsForgot(true)
     event.preventDefault()
 
     if (!email) {
       console.error('Please email in all fields.')
       setErrMsg('Please email in all fields.')
       setIsOpenDialog(true)
+      setIsForgot(false)
       return
     }
 
@@ -48,15 +51,18 @@ function ChangePassword() {
         )
         setIsOpenDialog(true)
         console.log('Forgot-password successful', response)
+        setIsForgot(false)
       } else {
         setErrMsg(data.error_msg)
         setIsOpenDialog(true)
         console.error('Forgot-password failed', response)
+        setIsForgot(false)
       }
     } catch (error) {
       setErrMsg('Error occurred while Forgot-password.')
       setIsOpenDialog(true)
       console.error('Error occurred while Forgot-password in:', error)
+      setIsForgot(false)
     }
   }
   return (
@@ -96,6 +102,7 @@ function ChangePassword() {
               </Link>
             </div>
             <Button
+              disabled={isForgot}
               type='submit'
               className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
             >
