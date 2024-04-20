@@ -1,19 +1,15 @@
 import HeaderSettings from '../components/HeaderSettings'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function Settings() {
   const navigate = useNavigate()
-  const [nickname, setNickname] = useState('')
-  const [inviteFlag, setInviteFlag] = useState(false)
-  const [inviteCode, setInviteCode] = useState('')
 
   useEffect(() => {
     const nicknameLocal = localStorage.getItem('nickname')
     if (!nicknameLocal) {
       navigate('/')
     } else {
-      setNickname(nicknameLocal)
       getTeam()
     }
   }, [navigate])
@@ -24,8 +20,6 @@ function Settings() {
       if (responseTeam.ok) {
         const dataTeam = await responseTeam.json()
         localStorage.setItem('team_name', dataTeam.team_name)
-        setInviteFlag(dataTeam.invite_flag)
-        setInviteCode(dataTeam.invite_code)
         console.log('Load Team successful', dataTeam)
       } else {
         console.error('Load Team failed', responseTeam)
@@ -42,13 +36,7 @@ function Settings() {
         nickname={localStorage.getItem('nickname')}
         email={localStorage.getItem('email')}
         phoneNumber={localStorage.getItem('phone_number')}
-        team_id={localStorage.getItem('team_id')}
-        team_name={localStorage.getItem('team_name')}
-        role={localStorage.getItem('role')}
         game_id={localStorage.getItem('game_id')}
-        game_name={localStorage.getItem('game_name')}
-        invite_code={inviteCode}
-        invite_flag={inviteFlag}
       />
     </div>
   )
