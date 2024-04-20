@@ -1,17 +1,15 @@
 import Header from '../components/Header'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function Home() {
   const navigate = useNavigate()
-  const [nickname, setNickname] = useState('')
 
   useEffect(() => {
     const nicknameLocal = localStorage.getItem('nickname')
     if (!nicknameLocal) {
       navigate('/')
     } else {
-      setNickname(nicknameLocal)
       getTeam()
     }
   }, [navigate])
