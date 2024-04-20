@@ -783,16 +783,19 @@ const Header = (props) => {
   let gameMapSearchComponent = gameMap.map((item) => {
     return (
       <>
-        <input
-          className='mr-1'
-          type='checkbox'
-          id={item}
-          name='searchMap'
-          value={item}
-          checked={selectedMaps.includes(item)}
-          onChange={handleMapChange}
-        />
-        <label className='mr-1' htmlFor={item}>
+        <label className='mr-1 rounded-full cursor-pointer' htmlFor={item}>
+          <input
+            type='checkbox'
+            className="before:content[''] peer relative h-4 w-4 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
+            id={item}
+            name='searchMap'
+            value={item}
+            checked={selectedMaps.includes(item)}
+            onChange={handleMapChange}
+          />
+          <span className='absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100'></span>
+        </label>
+        <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor={item}>
           {item}
         </label>
       </>
@@ -1044,7 +1047,7 @@ const Header = (props) => {
                       checked={selectedMapType === 'all'}
                       onChange={(e) => setSelectedMapType(e.target.value)}
                     />
-                    <label className='mr-1' htmlFor='all'>
+                    <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='all'>
                       All Maps
                     </label>
                     <input
@@ -1056,7 +1059,7 @@ const Header = (props) => {
                       checked={selectedMapType === 'some'}
                       onChange={(e) => setSelectedMapType(e.target.value)}
                     />
-                    <label className='mr-1' htmlFor='some'>
+                    <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='some'>
                       Only Some
                     </label>
                   </div>
