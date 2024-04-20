@@ -83,7 +83,7 @@ function ChangePassword() {
             </Button>
           </DialogPanel>
         </Dialog>
-        <div className='bg-white bg-gray-900 shadow-md rounded-lg px-8 py-6 max-w-md'>
+        <div className='shadow-md rounded-lg px-8 py-6 max-w-md'>
           <h1 className='text-2xl font-bold text-center mb-4 text-gray-950'>Forgot Password</h1>
           <form onSubmit={handleSubmit}>
             <div className='mb-4'>
