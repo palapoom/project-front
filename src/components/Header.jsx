@@ -1151,7 +1151,7 @@ const Header = (props) => {
                       checked={selectedMapType === 'all'}
                       onChange={(e) => setSelectedMapType(e.target.value)}
                     />
-                    <label className='mr-1' htmlFor='all'>
+                    <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='all'>
                       All Maps
                     </label>
                     <input
@@ -1163,7 +1163,7 @@ const Header = (props) => {
                       checked={selectedMapType === 'some'}
                       onChange={(e) => setSelectedMapType(e.target.value)}
                     />
-                    <label className='mr-1' htmlFor='some'>
+                    <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='some'>
                       Only Some
                     </label>
                   </div>
