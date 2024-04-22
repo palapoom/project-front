@@ -1430,12 +1430,12 @@ const Header = (props) => {
 
   let gameMapComponent = gameMap.map((item) => {
     return (
-      <>
+      <div>
         <input className='mr-1' type='radio' id={item} name='game' value={item} onChange={(e) => setScrimMap(e.target.value)} />
         <label className='mr-1' htmlFor={item}>
           {item}
         </label>
-      </>
+      </div>
     )
   })
 
@@ -1575,7 +1575,9 @@ const Header = (props) => {
             <label htmlFor='scrimMap' className='block text-sm font-medium text-gray-700 mb-2'>
                 Map
               </label>
-              {gameMapComponent}
+              <div className='grid grid-cols-5'>
+                {gameMapComponent}
+              </div>
             </div>
           </p>
           <Button className='mt-8 w-full' onClick={() => handlePostScrim()}>
