@@ -65,6 +65,7 @@ const Header = (props) => {
   const [teamBattle, setTeamBattle] = useState([undefined])
   const [member, setMember] = useState([])
   const [matches, setMatches] = useState([])
+  const [history, setHistory] = useState([])
   const [matchButton, setMatchButton] = useState(() => (
     <div className='flex items-center'>
       <Button className='mt-8 w-full' onClick={() => setIsOpenTeamBattleMatch(false)}>
@@ -89,6 +90,7 @@ const Header = (props) => {
     getScrim()
     getScrimOffer()
     getMatches()
+    getHistory()
   }, [])
 
   // const supabase = createClient(process.env.SUPABASE_URL, process.env.SERVICE_ROLE_KEY)
@@ -96,6 +98,27 @@ const Header = (props) => {
     'https://pkeejyrcevjrgrgljqfw.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrZWVqeXJjZXZqcmdyZ2xqcWZ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTgwMDA2MCwiZXhwIjoyMDI3Mzc2MDYwfQ.HcJ80sv2Xs7Q07R_qAQg4eS-1zOsXG4au8EMFMJpt3w'
   )
+
+  const getHistory = async () => {
+    try {
+      const responseHistory = await fetch(
+        `https://scrim-api-production.up.railway.app/scrim/match-history/team-id/${team_id}`
+      )
+      if (responseHistory.ok) {
+        const dataHistory = await responseHistory.json()
+        if (dataHistory.scrims) {
+          setHistory(dataHistory.scrims)
+        } else {
+          setHistory([])
+        }
+        console.log('Load History successful', dataHistory)
+      } else {
+        console.error('Load History failed', responseHistory)
+      }
+    } catch (error) {
+      console.error('Error occurred while Load History in:', error)
+    }
+  }
 
   const getMatches = async () => {
     try {
@@ -215,12 +238,30 @@ const Header = (props) => {
     }
   }
 
+  const handleTeamBattleHistory = async (teamId, mapScrim, date, time) => {
+    try {
+      const responseTeamBattleHistory = await fetch('https://scrim-api-production.up.railway.app/team/detail/team-id/' + teamId)
+      if (responseTeamBattleHistory.ok) {
+        let dataTeamBattleHistory = await responseTeamBattleHistory.json()
+        dataTeamBattleHistory = { ...dataTeamBattleHistory, scrim_map: mapScrim, scrim_date: date, scrim_time: time }
+
+        setTeamBattle(dataTeamBattleHistory)
+        setIsOpenTeamBattleMatch(true)
+        console.log('Load TeamBattleHistory successful', dataTeamBattleMatch)
+      } else {
+        console.error('Load TeamBattleHistory failed', responseTeamBattleMatch)
+      }
+    } catch (error) {
+      console.error('Error occurred while Load TeamBattleHistory in:', error)
+    }
+  }
+
   const handleTeamBattleMatch = async (teamId, scrimId, mapScrim, date, time) => {
     try {
       if (role == 'Manager' || role == 'Coach') {
         setMatchButton(
           <div className='flex items-center'>
-            <Button className='mt-8 mr-2 w-6/12' onClick={() => setIsOpenTeamBattleMatch(false)}>
+                <Button className='mt-8 mr-2 w-6/12' onClick={() => setIsOpenTeamBattleMatch(false)}>
               Got it!
             </Button>
             <Button color='red' className='mt-8 w-6/12' onClick={() => handleScrimCancel(scrimId)}>
@@ -274,15 +315,16 @@ const Header = (props) => {
       console.log('Post Scrim', jsonData)
 
       const responseChangeRole = await fetch('https://scrim-api-production.up.railway.app/scrim', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
 
       if (responseChangeRole.ok) {
         getScrim()
+        getHistory()
         setScrimDate(undefined)
         setScrimTime('')
         setScrimMap()
@@ -328,12 +370,12 @@ const Header = (props) => {
     console.log('kick', jsonData)
     try {
       const responseKick = await fetch('https://scrim-api-production.up.railway.app/kick-member', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
       if (responseKick.ok) {
         getMember()
         setErrMsg(`Kick successful ${userId}`)
@@ -359,12 +401,12 @@ const Header = (props) => {
     console.log('Change Role', jsonData)
     try {
       const responseChangeRole = await fetch('https://scrim-api-production.up.railway.app/change-role', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
 
       if (responseChangeRole.ok) {
         getMember()
@@ -394,11 +436,11 @@ const Header = (props) => {
   const handleGenerateCode = async () => {
     try {
       const responseInviteCode = await fetch('https://scrim-api-production.up.railway.app/team/invite-code/team-id/' + team_id, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
       if (responseInviteCode.ok) {
         const dataInviteCode = await responseInviteCode.json()
         localStorage.setItem('invite_flag', true)
@@ -428,12 +470,12 @@ const Header = (props) => {
     console.log(jsonData)
     try {
       const response = await fetch('https://scrim-api-production.up.railway.app/team', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
       if (response.ok) {
         setTeamNameOnTop(teamName)
         setTeamLogoOnTop(media)
@@ -462,16 +504,17 @@ const Header = (props) => {
     console.log('ScrimAccept', jsonData)
     try {
       const response = await fetch('https://scrim-api-production.up.railway.app/scrim/accept', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
       if (response.ok) {
         getGameMap()
         getMember()
         getScrim()
+        getHistory()
         getScrimOffer()
         getMatches()
         setErrMsg(`ScrimAccept successful ${teamName}`)
@@ -497,14 +540,15 @@ const Header = (props) => {
     console.log('ScrimCancelOffer', jsonData)
     try {
       const response = await fetch('https://scrim-api-production.up.railway.app/scrim/cancel', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
       if (response.ok) {
         getScrim()
+        getHistory()
         getScrimOffer()
         getMatches()
         setErrMsg(`ScrimCancelOffer successful ${teamName}`)
@@ -530,14 +574,15 @@ const Header = (props) => {
     console.log('ScrimCancel', jsonData)
     try {
       const response = await fetch('https://scrim-api-production.up.railway.app/scrim/cancel', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
       if (response.ok) {
         getScrim()
+        getHistory()
         getScrimOffer()
         getMatches()
         setErrMsg(`ScrimCancel successful ${teamName}`)
@@ -563,14 +608,15 @@ const Header = (props) => {
     console.log('ScrimOffer', jsonData)
     try {
       const response = await fetch('https://scrim-api-production.up.railway.app/scrim/offer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
       if (response.ok) {
         getScrim()
+        getHistory()
         getScrimOffer()
         setErrMsg(`ScrimOffer successful ${teamName}`)
         setIsOpenErrorFlex(true)
@@ -590,11 +636,11 @@ const Header = (props) => {
   const handleDeleteTeam = async () => {
     try {
       const response = await fetch('https://scrim-api-production.up.railway.app/team/team-id/' + team_id, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
       if (response.ok) {
         localStorage.setItem('role', 'Player')
         localStorage.setItem('team_id', 'null')
@@ -608,6 +654,7 @@ const Header = (props) => {
         getScrim()
         getScrimOffer()
         getMatches()
+        getHistory()
 
         setIsOpenDeleteTeam(false)
 
@@ -632,14 +679,15 @@ const Header = (props) => {
     console.log('ScrimDelete', jsonData)
     try {
       const response = await fetch('https://scrim-api-production.up.railway.app/scrim', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
       if (response.ok) {
         getScrim()
+        getHistory()
         getScrimOffer()
         setErrMsg(`ScrimDelete successful ${teamName}`)
         setIsOpenErrorFlex(true)
@@ -806,6 +854,35 @@ const Header = (props) => {
     )
   })
 
+  let historyComponent = history.map((item, index) => {
+    const historyDate = new Date(item.scrim_date)
+    const historyTime = new Date(item.scrim_time)
+    const hours = historyTime.getUTCHours().toString().padStart(2, '0')
+    const minutes = historyTime.getUTCMinutes().toString().padStart(2, '0')
+    const formattedTime = `${hours}:${minutes}`
+    return (
+      <TableRow key={index}>
+        <TableCell>{historyDate.toLocaleDateString()}</TableCell>
+        <TableCell>
+          <div
+            className='flex items-center cursor-pointer'
+            onClick={() =>
+              handleTeamBattleHistory(item.team_id, item.scrim_map, historyDate.toLocaleDateString(), formattedTime)
+            }
+          >
+            <img
+              src={`https://pkeejyrcevjrgrgljqfw.supabase.co/storage/v1/object/public/images/${item.team_logo}`}
+              className='object-cover h-4 w-4 rounded-full me-2'
+            />
+            {item.team_name}
+          </div>
+        </TableCell>
+        <TableCell>{item.scrim_map}</TableCell>
+        <TableCell>{formattedTime}</TableCell>
+      </TableRow>
+    )
+  })
+
   let matchesComponent = matches.map((item, index) => {
     const matcheDate = new Date(item.scrim_date)
     const matcheTime = new Date(item.scrim_time)
@@ -876,6 +953,7 @@ const Header = (props) => {
                 <Tab>Manage Scrim</Tab>
                 <Tab>Search</Tab>
                 <Tab>Matches</Tab>
+                <Tab>Match History</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
@@ -1043,7 +1121,7 @@ const Header = (props) => {
                   </div>
                 </TabPanel>
                 <TabPanel>
-                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Search Detail</p>
+                <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Search Detail</p>
                   <div className='mb-4'>
                     <label htmlFor='searchMapType' className='block text-sm font-medium text-gray-700 mb-2'>
                       Maps
@@ -1069,13 +1147,13 @@ const Header = (props) => {
                       checked={selectedMapType === 'some'}
                       onChange={(e) => setSelectedMapType(e.target.value)}
                     />
-                    <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='some'>
+                             <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='some'>
                       Only Some
                     </label>
                   </div>
                   <div className='mb-4'>{gameMapSearchComponent}</div>
                   <div className='text-center'>
-                    <Button icon={RiAddLine} color='purple' onClick={() => setIsOpenPostScrim(true)}>
+                  <Button icon={RiAddLine} color='purple' onClick={() => setIsOpenPostScrim(true)}>
                       POST YOUR REQUEST
                     </Button>
                   </div>
@@ -1095,7 +1173,7 @@ const Header = (props) => {
                   </div>
                 </TabPanel>
                 <TabPanel>
-                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Matches Detail</p>
+                <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Matches Detail</p>
                   <Table>
                     <TableHead>
                       <TableRow>
@@ -1106,6 +1184,22 @@ const Header = (props) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>{matchesComponent}</TableBody>
+                  </Table>
+                </TabPanel>
+                <TabPanel>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+                    Matches Detail
+                  </p>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeaderCell>Date</TableHeaderCell>
+                        <TableHeaderCell>Team</TableHeaderCell>
+                        <TableHeaderCell>Map</TableHeaderCell>
+                        <TableHeaderCell>Time</TableHeaderCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{historyComponent}</TableBody>
                   </Table>
                 </TabPanel>
               </TabPanels>
@@ -1130,6 +1224,7 @@ const Header = (props) => {
                 <Tab>Manage Scrim</Tab>
                 <Tab>Search</Tab>
                 <Tab>Matches</Tab>
+                <Tab>Match History</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
@@ -1153,9 +1248,9 @@ const Header = (props) => {
                   </div>
                 </TabPanel>
                 <TabPanel>
-                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Search Detail</p>
+                <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Search Detail</p>
                   <div className='mb-4'>
-                    <label htmlFor='searchMapType' className='block text-sm font-medium text-gray-700 mb-2'>
+                  <label htmlFor='searchMapType' className='block text-sm font-medium text-gray-700 mb-2'>
                       Maps
                     </label>
                     <input
@@ -1167,7 +1262,7 @@ const Header = (props) => {
                       checked={selectedMapType === 'all'}
                       onChange={(e) => setSelectedMapType(e.target.value)}
                     />
-                    <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='all'>
+    <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='all'>
                       All Maps
                     </label>
                     <input
@@ -1179,13 +1274,13 @@ const Header = (props) => {
                       checked={selectedMapType === 'some'}
                       onChange={(e) => setSelectedMapType(e.target.value)}
                     />
-                    <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='some'>
+                                      <label className='mr-1 mt-px font-light text-gray-700 cursor-pointer select-none' htmlFor='some'>
                       Only Some
                     </label>
                   </div>
                   <div className='mb-4'>{gameMapSearchComponent}</div>
                   <div className='text-center'>
-                    <Button icon={RiAddLine} color='purple' onClick={() => setIsOpenPostScrim(true)}>
+                  <Button icon={RiAddLine} color='purple' onClick={() => setIsOpenPostScrim(true)}>
                       POST YOUR REQUEST
                     </Button>
                   </div>
@@ -1218,6 +1313,20 @@ const Header = (props) => {
                     <TableBody>{matchesComponent}</TableBody>
                   </Table>
                 </TabPanel>
+                <TabPanel>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Matches Detail</p>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeaderCell>Date</TableHeaderCell>
+                        <TableHeaderCell>Team</TableHeaderCell>
+                        <TableHeaderCell>Map</TableHeaderCell>
+                        <TableHeaderCell>Time</TableHeaderCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{historyComponent}</TableBody>
+                  </Table>
+                </TabPanel>
               </TabPanels>
             </TabGroup>
           </Card>
@@ -1238,10 +1347,11 @@ const Header = (props) => {
             <TabGroup>
               <TabList className='mt-4'>
                 <Tab>Matches</Tab>
+                <Tab>Match History</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Matches Detail</p>
+                <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Matches Detail</p>
                   <Table>
                     <TableHead>
                       <TableRow>
@@ -1252,6 +1362,24 @@ const Header = (props) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>{matchesComponent}</TableBody>
+                  </Table>
+                </TabPanel>
+              </TabPanels>
+              <TabPanels>
+                <TabPanel>
+                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
+                    Matches Detail
+                  </p>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeaderCell>Date</TableHeaderCell>
+                        <TableHeaderCell>Team</TableHeaderCell>
+                        <TableHeaderCell>Map</TableHeaderCell>
+                        <TableHeaderCell>Time</TableHeaderCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{historyComponent}</TableBody>
                   </Table>
                 </TabPanel>
               </TabPanels>
@@ -1438,13 +1566,13 @@ const Header = (props) => {
               <DatePicker minDate={new Date()} className='mx-auto max-w-sm' value={scrimDate} onValueChange={(e) => setScrimDate(e)} />
             </div>
             <div className='mb-4'>
-              <label htmlFor='scrimTime' className='block text-sm font-medium text-gray-700 mb-2'>
+            <label htmlFor='scrimTime' className='block text-sm font-medium text-gray-700 mb-2'>
                 Time
               </label>
               {gameTimeComponent}
             </div>
             <div className='mb-4'>
-              <label htmlFor='scrimMap' className='block text-sm font-medium text-gray-700 mb-2'>
+            <label htmlFor='scrimMap' className='block text-sm font-medium text-gray-700 mb-2'>
                 Map
               </label>
               {gameMapComponent}
@@ -1494,7 +1622,7 @@ const Header = (props) => {
         </div>
         <div className='flex flex-col flex-1 overflow-y-auto'>
           <nav className='flex-1 px-2 py-4 bg-gray-800'>
-            <p className='flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700'>{nickname}</p>
+          <p className='flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700'>{nickname}</p>
             <Link to='/home' className='flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700'>
               <Icon className='h-6 w-6 mr-2' icon={RiGroupLine} variant='simple' tooltip='Team' color='white' />
               Team
@@ -1515,14 +1643,14 @@ const Header = (props) => {
         <div className='flex items-center justify-between h-16 bg-white border-b border-gray-200'>
           <div className='flex items-center px-4'>
             <button className='text-gray-500 focus:outline-none focus:text-gray-700'>
-              <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+            <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h16M4 18h16' />
               </svg>
             </button>
           </div>
           <div className='flex items-center pr-4'>
             <button className='flex items-center text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700'>
-              <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+            <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M12 19l-7-7 7-7m5 14l7-7-7-7' />
               </svg>
             </button>
