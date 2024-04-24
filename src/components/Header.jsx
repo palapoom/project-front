@@ -1364,12 +1364,8 @@ const Header = (props) => {
                     <TableBody>{matchesComponent}</TableBody>
                   </Table>
                 </TabPanel>
-              </TabPanels>
-              <TabPanels>
                 <TabPanel>
-                  <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>
-                    Matches Detail
-                  </p>
+                <p className='mt-4 leading-6 text-tremor-default text-tremor-content dark:text-dark-tremor-content'>Matches Detail</p>
                   <Table>
                     <TableHead>
                       <TableRow>
